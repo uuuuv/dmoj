@@ -145,3 +145,4 @@ The judge can also grade in the languages listed below:
 * Brain\*\*\*\*
 * Zig
 # dmoj
+# dmoj
