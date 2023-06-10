@@ -82,6 +82,8 @@
             toolbar = prev(widget),
             main_block = toolbar.parentNode;
 
+         
+
         // Toolbar maximize/minimize button
         var min_max = toolbar.getElementsByClassName('django-ace-max_min');
         min_max[0].onclick = function () {
@@ -120,7 +122,7 @@
             editor.getSession().setUseWrapMode(true);
         }
 
-        editor.getSession().on('change', function () {
+        editor.getSession().on('change', function (arg, activeEditor) {
             textarea.value = editor.getSession().getValue();
         });
 

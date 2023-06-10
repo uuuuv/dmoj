@@ -324,6 +324,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django_jinja.backend.Jinja2',
         'DIRS': [
+            os.path.join(BASE_DIR, 'funix_templates'), # uuuuvcomment
             os.path.join(BASE_DIR, 'templates'),
         ],
         'APP_DIRS': False,
@@ -362,6 +363,7 @@ TEMPLATES = [
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'APP_DIRS': True,
         'DIRS': [
+            os.path.join(BASE_DIR, 'funix_templates'), # uuuuvcomment
             os.path.join(BASE_DIR, 'templates'),
         ],
         'OPTIONS': {

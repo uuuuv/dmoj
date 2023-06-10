@@ -69,6 +69,12 @@
         </style>
     {% endif %}
     
+    {# uuuuv_comment: css #}
+    <link rel="stylesheet" href="{{ static('funix/css/base.css') }}">
+
+    {# uuuuv_comment: endcss #}
+
+
     {% block media %}{% endblock %}
     {% if not INLINE_JQUERY %}
         <script src="{{ JQUERY_JS }}"></script>
@@ -265,15 +271,11 @@
         </a>
     </div>
 {% endif %}
-
-
-
 <div id="page-container">
     <noscript>
         <div id="noscript">{{ _('This site works best with JavaScript enabled.') }}</div>
     </noscript>
     <br>
-
 
     <main id="content">
         {% block title_row %}
@@ -290,11 +292,18 @@
         <div id="content-body">{% block body %}{% endblock %}</div>
     </main>
 
+
+
     {% if misc_config.announcement %}
         <div id="announcement">{{ misc_config.announcement|safe }}</div>
     {% endif %}
 
     {% block bodyend %}{% endblock %}
+
+    {% block funix_body %}
+    {% endblock %}
+
+
 
 
 

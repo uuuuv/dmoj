@@ -53,7 +53,9 @@
     {% endif %}
 {% endblock %}
 
+
 {% block title_row %}
+    
     <div class="problem-title">
         {% if request.user.is_authenticated %}
             {% if problem.id in completed_problem_ids %}
@@ -98,6 +100,7 @@
         {% endif %}
     </div>
 {% endblock %}
+
 
 {% block info_float %}
     {% if request.user.is_authenticated and request.in_contest and submission_limit %}
@@ -253,6 +256,8 @@
             {% endwith %}
         </div>
     {% endif %}
+
+
     {% if show_languages %}
         <div id="allowed-langs">
             <div class="toggle open unselectable">
@@ -297,7 +302,7 @@
             </div>
         </div>
     {% endif %}
-{% endblock %}
+{% endblock %} 
 
 {% block description %}
     {% cache 86400 'problem_html' problem.id MATH_ENGINE LANGUAGE_CODE %}
@@ -311,9 +316,11 @@
         </span>
         {% endif %}
     {% endwith %}
-{% endblock %}
+{% endblock %} 
 
-{% block post_description_end %}
+
+
+    {% block post_description_end %}
     {% if request.user.is_authenticated and not request.profile.mute %}
         <a href="{{ url('new_problem_ticket', problem.code) }}" class="button clarify">
             {%- if contest_problem and contest_problem.contest.use_clarifications and request.profile.current_contest.live -%}
@@ -325,7 +332,9 @@
     {% endif %}
 {% endblock %}
 
-{% block comments %}
+
+
+    {% block comments %}
     {% if contest_problem and contest_problem.contest.use_clarifications %}
         <div class="clarifications-area">
             <h2><i class="fa fa-question-circle"></i> {{ _('Clarifications') }}</h2>

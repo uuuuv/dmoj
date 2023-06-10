@@ -697,16 +697,13 @@ class ProblemSubmit(LoginRequiredMixin, ProblemMixin, TitleMixin, SingleObjectFo
                               .exclude(status__in=['D', 'IE', 'CE', 'AB']).count() >= settings.DMOJ_SUBMISSION_LIMIT
         ):
             return HttpResponse(format_html('<h1>{0}</h1>', _('You submitted too many submissions.')), status=429)
-        
         if not self.object.allowed_languages.filter(id=form.cleaned_data['language'].id).exists():
             raise PermissionDenied()
-        
         if not self.request.user.is_superuser and self.object.banned_users.filter(id=self.request.profile.id).exists():
             return generic_message(self.request, _('Banned from submitting'),
                                    _('You have been declared persona non grata for this problem. '
                                      'You are permanently barred from submitting to this problem.'))
         # Must check for zero and not None. None means infinite submissions remaining.
-        
         if self.remaining_submission_count == 0:
             return generic_message(self.request, _('Too many submissions'),
                                    _('You have exceeded the submission limit for this problem.'))
@@ -806,3 +803,284 @@ class ProblemClone(ProblemMixin, PermissionRequiredMixin, TitleMixin, SingleObje
             revisions.set_comment(_('Cloned problem from %s') % old_code)
 
         return HttpResponseRedirect(reverse('admin:judge_problem_change', args=(problem.id,)))
+
+# ************************************************
+# ************************************************
+# ******************* CUSTOM *********************
+# ************************************************
+# ************************************************
+from judge import event_poster as event
+from operator import attrgetter
+from collections import namedtuple
+from itertools import groupby
+
+# these function were copied from views/submission.py
+def make_batch(batch, cases):
+    result = {'id': batch, 'cases': cases}
+    if batch:
+        result['points'] = min(map(attrgetter('points'), cases))
+        result['total'] = max(map(attrgetter('total'), cases))
+    return result
+
+TestCase = namedtuple('TestCase', 'id status batch num_combined')
+
+def get_statuses(batch, cases):
+    cases = [TestCase(id=case.id, status=case.status, batch=batch, num_combined=1) for case in cases]
+    if batch:
+        # Get the first non-AC case if it exists.
+        return [next((case for case in cases if case.status != 'AC'), cases[0])]
+    else:
+        return cases
+
+def group_test_cases(cases):
+    result = []
+    status = []
+    buf = []
+    max_execution_time = 0.0
+    last = None
+    for case in cases:
+        if case.time:
+            max_execution_time = max(max_execution_time, case.time)
+        if case.batch != last and buf:
+            result.append(make_batch(last, buf))
+            status.extend(get_statuses(last, buf))
+            buf = []
+        buf.append(case)
+        last = case.batch
+    if buf:
+        result.append(make_batch(last, buf))
+        status.extend(get_statuses(last, buf))
+    return result, status, max_execution_time
+
+
+def combine_statuses(status_cases, submission):
+    ret = []
+    # If the submission is not graded and the final case is a batch,
+    # we don't actually know if it is completed or not, so just remove it.
+    if not submission.is_graded and len(status_cases) > 0 and status_cases[-1].batch is not None:
+        status_cases.pop()
+
+    for key, group in groupby(status_cases, key=attrgetter('status')):
+        group = list(group)
+        if len(group) > 10:
+            # Grab the first case's id so the user can jump to that case, and combine the rest.
+            ret.append(TestCase(id=group[0].id, status=key, batch=None, num_combined=len(group)))
+        else:
+            ret.extend(group)
+    return ret
+
+# uuuuvcomment my odd function
+def is_anonymous(self):
+    return self.request.user.is_anonymous
+# uuuuvcomment I removed LoginRequiredMixin from this class.
+# User who doesn't have permission only see problem, otherwise can see submission in additional
+# class FunixProblemSubmit(LoginRequiredMixin, ProblemMixin, TitleMixin, SingleObjectFormView):
+class FunixProblemSubmit( ProblemMixin, TitleMixin, SingleObjectFormView):
+    template_name = 'problem/problem-and-submission.html'
+    form_class = ProblemSubmitForm
+
+    @cached_property
+    def contest_problem(self):
+        if (is_anonymous(self)):
+            return None
+        
+        if self.request.profile.current_contest is None:
+            return None
+        return get_contest_problem(self.object, self.request.profile)
+
+    @cached_property
+    def remaining_submission_count(self):
+        if (is_anonymous(self)):
+            return None
+
+        max_subs = self.contest_problem and self.contest_problem.max_submissions
+        if max_subs is None:
+            return None
+        # When an IE submission is rejudged into a non-IE status, it will count towards the
+        # submission limit. We max with 0 to ensure that `remaining_submission_count` returns
+        # a non-negative integer, which is required for future checks in this view.
+        return max(
+            0,
+            max_subs - get_contest_submission_count(
+                self.object, self.request.profile, self.request.profile.current_contest.virtual,
+            ),
+        )
+
+    @cached_property
+    def default_language(self):
+        # If the old submission exists, use its language, otherwise use the user's default language.
+        if self.old_submission is not None:
+            return self.old_submission.language
+        
+        if not self.request.user.is_anonymous:
+            return self.request.profile.language
+
+    def get_content_title(self):
+        return mark_safe(
+            escape(_('Submit to %s')) % format_html(
+                '<a href="{0}">{1}</a>',
+                reverse('problem_detail', args=[self.object.code]),
+                self.object.translated_name(self.request.LANGUAGE_CODE),
+            ),
+        )
+
+    def get_title(self):
+        return _('Submit to %s') % self.object.translated_name(self.request.LANGUAGE_CODE)
+
+    def get_initial(self):
+        initial = {'language': self.default_language}
+        if self.old_submission is not None:
+            initial['source'] = self.old_submission.source.source
+        return initial
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['instance'] = Submission(user=self.request.profile, problem=self.object)
+
+        if self.object.is_editable_by(self.request.user):
+            kwargs['judge_choices'] = tuple(
+                Judge.objects.filter(online=True, problems=self.object).values_list('name', 'name'),
+            )
+        else:
+            kwargs['judge_choices'] = ()
+
+        return kwargs
+
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        if not self.request.user.is_anonymous:
+            form.fields['language'].queryset = (
+                self.object.usable_languages.order_by('name', 'key')
+                .prefetch_related(Prefetch('runtimeversion_set', RuntimeVersion.objects.order_by('priority')))
+            )
+
+            form_data = getattr(form, 'cleaned_data', form.initial)
+            if 'language' in form_data:
+                form.fields['source'].widget.mode = form_data['language'].ace
+            form.fields['source'].widget.theme = self.request.profile.resolved_ace_theme
+
+        return form
+
+    def get_success_url(self):
+        return reverse('problem_submit', kwargs=({
+            "problem": self.new_submission.problem.code,
+            "submission": self.new_submission.id
+        }))
+        # return reverse('problem_submit', args=(self.new_submission.problem.code,))
+
+    def form_valid(self, form):
+        if (is_anonymous(self)):
+            return super().form_valid(form)
+
+        if (
+            not self.request.user.has_perm('judge.spam_submission') and
+            Submission.objects.filter(user=self.request.profile, rejudged_date__isnull=True)
+                              .exclude(status__in=['D', 'IE', 'CE', 'AB']).count() >= settings.DMOJ_SUBMISSION_LIMIT
+        ):
+            return HttpResponse(format_html('<h1>{0}</h1>', _('You submitted too many submissions.')), status=429)
+        if not self.object.allowed_languages.filter(id=form.cleaned_data['language'].id).exists():
+            raise PermissionDenied()
+        if not self.request.user.is_superuser and self.object.banned_users.filter(id=self.request.profile.id).exists():
+            return generic_message(self.request, _('Banned from submitting'),
+                                   _('You have been declared persona non grata for this problem. '
+                                     'You are permanently barred from submitting to this problem.'))
+        # Must check for zero and not None. None means infinite submissions remaining.
+        if self.remaining_submission_count == 0:
+            return generic_message(self.request, _('Too many submissions'),
+                                   _('You have exceeded the submission limit for this problem.'))
+
+        with transaction.atomic():
+            self.new_submission = form.save(commit=False)
+
+            contest_problem = self.contest_problem
+            if contest_problem is not None:
+                # Use the contest object from current_contest.contest because we already use it
+                # in profile.update_contest().
+                self.new_submission.contest_object = self.request.profile.current_contest.contest
+                if self.request.profile.current_contest.live:
+                    self.new_submission.locked_after = self.new_submission.contest_object.locked_after
+                self.new_submission.save()
+                ContestSubmission(
+                    submission=self.new_submission,
+                    problem=contest_problem,
+                    participation=self.request.profile.current_contest,
+                ).save()
+            else:
+                self.new_submission.save()
+
+            source = SubmissionSource(submission=self.new_submission, source=form.cleaned_data['source'])
+            source.save()
+
+        # Save a query.
+        self.new_submission.source = source
+        self.new_submission.judge(force_judge=True, judge_id=form.cleaned_data['judge'])
+
+        return super().form_valid(form)
+
+    def post(self, request, *args, **kwargs):
+        try:
+            return super().post(request, *args, **kwargs)
+        except Http404:
+            # Is this really necessary? This entire post() method could be removed if we don't log this.
+            user_logger.info(
+                'Naughty user %s wants to submit to %s without permission',
+                request.user.username,
+                kwargs.get(self.slug_url_kwarg),
+            )
+            return HttpResponseForbidden(format_html('<h1>{0}</h1>', _('Do you want me to ban you?')))
+
+    def dispatch(self, request, *args, **kwargs):
+        submission_id = kwargs.get('submission')
+        problem_code = kwargs.get('problem')
+        problem = get_object_or_404(Problem, code=problem_code)
+        self.old_submission = None
+
+        if submission_id is not None:
+            self.old_submission = get_object_or_404(
+                Submission.objects.select_related('source', 'language'),
+                id=submission_id,
+            )
+
+            if not self.old_submission.can_see_detail(request.user):
+                # raise SubmissionPermissionDenied(submission) # uuuuvcomment
+                raise PermissionDenied()
+            
+            if not request.user.has_perm('judge.resubmit_other') and self.old_submission.user != request.profile:
+                raise PermissionDenied()
+        else:
+            if not self.request.user.is_anonymous:
+                submissions = Submission.objects.filter(user=self.request.user.profile,problem=problem).order_by('-date')
+                if submissions.count() > 0:
+                    self.old_submission = submissions[0]
+
+        return super().dispatch(request, *args, **kwargs)
+
+
+    # get context data 
+    def get_context_data(self, **kwargs):
+        user = self.request.user
+        context = super().get_context_data(**kwargs)
+        context['langs'] = Language.objects.all()
+        context['no_judges'] = not context['form'].fields['language'].queryset
+        context['submission_limit'] = self.contest_problem and self.contest_problem.max_submissions
+        context['submissions_left'] = self.remaining_submission_count
+        context['ACE_URL'] = settings.ACE_URL
+        context['default_lang'] = self.default_language
+        
+        submission = self.old_submission
+        if submission is not None:
+            context['submission'] = submission
+
+            # submission status 
+            context['last_msg'] = event.last()
+            context['batches'], statuses, context['max_execution_time'] = group_test_cases(submission.test_cases.all())
+            context['statuses'] = combine_statuses(statuses, submission)
+
+            context['time_limit'] = submission.problem.time_limit
+            try:
+                lang_limit = submission.problem.language_limits.get(language=submission.language)
+            except ObjectDoesNotExist:
+                pass
+            else:
+                context['time_limit'] = lang_limit.time_limit
+        return context

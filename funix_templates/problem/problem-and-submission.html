@@ -1,0 +1,608 @@
+{% extends 'base.html' %}
+
+{% block media %}
+    {{ form.media.css }}
+    <link rel="stylesheet" href="{{ static('plugins/css/resizable.min.css') }}">
+    <link rel="stylesheet" href="{{ static('funix/css/problem-and-submission.css') }}">
+{% endblock %}
+
+
+{% block js_media %}
+    <script src="{{static('plugins/js/resizable.min.js')}}" type="text/javascript"></script>
+    <script type="text/javascript" src="{{ ACE_URL }}/ace.js"></script>
+    {{ form.media.js }}
+
+    {% compress js %}
+        <script type="text/javascript">
+            $(function () {
+                function format(state) {
+                    if (!state.id) return state.text; // optgroup
+                    return state.text;
+                }
+
+                window.previous_template = '';
+
+                function update_language_template() {
+                    var source = $('textarea#id_source');
+                    if (source.val() == window.previous_template.replace(/\r/g, '') || source.val() == '') {
+                        var lang_id = $('#id_language').val();
+                        var code = localStorage.getItem('submit:' + $('#id_language').val());
+
+                        function update_submit_area(code) {
+                            window.previous_template = code;
+                            source.val(code);
+                            window.ace_source.getSession().setValue(code);
+                        }
+
+                        if (code != null) {
+                            update_submit_area(code);
+                        } else {
+                            $.get('{{ url('language_template_ajax') }}', {
+                                id: lang_id
+                            }).done(function (template) {
+                                update_submit_area(template);
+                            });
+                        }
+                    }
+                }
+
+                function makeDisplayData(data) {
+                    var site_data = data.attr('data-info');
+                    var judge_data = data.attr('data-judge-info');
+                    var display_data = site_data || judge_data;
+                    return display_data;
+                }
+
+                function formatSelection(state) {
+                    if (!state.id) return state.text; // optgroup
+                    var data = makeDisplayData($("option[data-id=" + state.id + "]"));
+                    return $('<span>').append($('<b>').text(state.text), ' (', data, ')');
+                }
+
+                // Terrible hack, adapted from https://github.com/select2/select2/issues/4436
+                $.fn.select2.amd.define('select2/data/customAdapter', ['select2/results', 'select2/utils'], function (Result, Utils) {
+                    RefPresenter = function ($element, options, dataAdapter) {
+                        RefPresenter.__super__.constructor.call(this, $element, options, dataAdapter);
+                    };
+                    Utils.Extend(RefPresenter, Result);
+                    RefPresenter.prototype.bind = function (container, $container) {
+                        container.on('results:focus', function (params) {
+                            var data = makeDisplayData($("option[data-id=" + params.data.id + "]"));
+                            $("#result-version-info").text(data);
+                        });
+                        RefPresenter.__super__.bind.call(this, container, $container);
+                    };
+                    return RefPresenter;
+                });
+
+                var customAdapter = $.fn.select2.amd.require('select2/data/customAdapter');
+
+                $("#id_language").select2({
+                    theme: '{{ DMOJ_SELECT2_THEME }}',
+                    templateResult: format,
+                    templateSelection: formatSelection,
+                    resultsAdapter: customAdapter
+                });
+
+                $('#id_language').on('select2:open', function (evt) {
+                    var dropdown = $('.select2-dropdown');
+                    if (!$('#result-version-info').length)
+                        dropdown.append($("<span id=\"result-version-info\">"));
+                    dropdown.attr('id', 'language-select2');
+                });
+
+                $('#id_judge').on('select2:open', function (evt) {
+                    var dropdown = $('.select2-dropdown');
+                    $('#result-version-info').remove();
+                    dropdown.attr('id', 'judge-select2');
+                });
+
+                $('#id_language').change(function () {
+                    var lang = $("#id_language").find("option:selected").attr('data-ace');
+                    window.ace_source.getSession().setMode("ace/mode/" + lang);
+                    update_language_template();
+                });
+
+                $('#ace_source').on('ace_load', function (e, editor) {
+                    window.aceEditor = editor;
+
+                    update_language_template();
+                    editor.commands.addCommand({
+                        name: 'save',
+                        bindKey: {win: 'Ctrl-S', mac: 'Command-S'},
+                        exec: function () {
+                            localStorage.setItem('submit:' + $('#id_language').val(), editor.getSession().getValue());
+                        }
+                    });
+                    editor.getSession().setUseWrapMode(true);
+                    editor.setFontSize(14);
+                    editor.setPrintMarginColumn(100);
+                    editor.focus();
+                });
+
+                // uuuuvcomment
+                // $(window).resize(function () {
+                //     $('#ace_source').height(Math.max($(window).height() - 353, 100));
+                // }).resize();
+
+                $('#problem_submit').submit(function (event) {
+                    if ($('#id_source').val().length > 65536) {
+                        alert("{{ _('Your source code must contain at most 65536 characters.') }}");
+                        event.preventDefault();
+                        $('#problem_submit').find(':submit').attr('disabled', false);
+                    }
+                });
+            });
+        </script>
+    {% endcompress %}
+
+    <script type="text/javascript" src="{{ static('event.js') }}"></script>
+    {% if submission and not submission.is_graded and last_msg %}
+        <script type="text/javascript">
+            $(function () {
+                var blocked = false, request = false;
+                var list = $('#test-cases');
+                $('#submit-button').addClass('disabled');
+
+                function update() {
+                    if (blocked) {
+                        request = true;
+                        return;
+                    }
+                    request = false;
+                    blocked = true;
+                    $.ajax({
+                        url: '{{ url('submission_testcases_query') }}',
+                        data: {id: '{{ submission.id }}'}
+                    }).done(function (data) {
+                        list.empty().html(data).find('.toggle').each(function () {
+                            register_toggle($(this));
+                        });
+                        setTimeout(function () {
+                            blocked = false;
+                            if (request)
+                                update();
+                        }, 500);
+                    }).fail(function (data) {
+                        console.log('Failed to update testcases!');
+                    });
+
+                    if ($(window).scrollTop() + $(window).height() > $(document).height() - 100)
+                        $("html, body").animate({scrollTop: $(document).height()}, 0);
+                }
+
+                var receiver = new EventReceiver(
+                    "{{ EVENT_DAEMON_LOCATION }}", "{{ EVENT_DAEMON_POLL_LOCATION }}",
+                    ['sub_{{ submission.id_secret }}'], {{ last_msg }}, function (message) {
+                        switch (message.type) {
+                            case 'internal-error':
+                            case 'grading-end':
+                            case 'compile-error':
+                                $('#abort-button').remove();
+                                $('#grading-label').remove();
+                                $('#submit-button').removeClass('disabled');
+                            case 'test-case':
+                            case 'grading-begin':
+                            case 'processing':
+                                update();
+                                $('#submit-button').removeClass('disabled');
+                        }
+                    }
+                )
+            });
+        </script>
+    {% endif %}
+
+    {% if submission and not submission.is_graded %}
+        <script type="text/javascript">
+            $(function () {
+                $(document).keydown(function(e) {
+                    // Ctrl-Enter or Command-Enter
+                    if ((e.metaKey || e.ctrlKey) && e.which == 13) {
+                        $('#abort-button form').submit();
+                    }
+                });
+            });
+        </script>
+    {% endif %}
+    
+{% endblock %}
+
+{% block body %}
+<div class="problem_container">
+    <div class="topbar">
+        <span> {% if content_title %}{{ content_title }}{% else %}{{ title }}{% endif %}</span>
+    </div>
+
+    <div class="sidebar">
+            <a class="active" href="{{request.path}}">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
+                </svg>   
+            </a>
+        
+            <a href="{{ url('chronological_submissions', problem.code) }}" title="{{ _('All submissions') }}">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 6.75h12M8.25 12h12m-12 5.25h12M3.75 6.75h.007v.008H3.75V6.75zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zM3.75 12h.007v.008H3.75V12zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm-.375 5.25h.007v.008H3.75v-.008zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+                </svg>       
+            </a>   
+
+            {% if request.user.is_authenticated and submission %}
+            <a href="{{ url('user_submissions', problem.code, request.user.username) }}" title="{{ _('My submissions') }}">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+            </a>
+            {% endif %}
+        
+            <a href="#">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 01.865-.501 48.172 48.172 0 003.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z" />
+                </svg>    
+            </a>  
+            
+            <a href="{{ url('ranked_submissions', problem.code) }}" title="{{ _('Best submissions') }}">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.563.563 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z" />
+                </svg>           
+            </a> 
+    </div>
+
+    <div class="main clearfloat">
+        <div class="problem_details">
+            <div class="problem_clsf clearfloat">
+                <div class="problem_clsf_item clsf_author">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+                    </svg>    
+                    <a href="#">{{problem.authors.all()[0]}}</a>
+                </div>
+
+                <div class="problem_clsf_item clsf_points">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+                    </svg>
+                    {{problem.points}} points
+                </div>
+
+                <div class="problem_clsf_item clsf_memorylimit">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75" />
+                    </svg>
+                      
+                    Memory limit: <span>{{problem.memory_limit|kbdetailformat }}</span>
+                </div>
+
+                <div class="problem_clsf_item clsf_type">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M14.25 9.75L16.5 12l-2.25 2.25m-4.5 0L7.5 12l2.25-2.25M6 20.25h12A2.25 2.25 0 0020.25 18V6A2.25 2.25 0 0018 3.75H6A2.25 2.25 0 003.75 6v12A2.25 2.25 0 006 20.25z" />
+                    </svg>
+                      
+                    Problem type: 
+                    {% for type in problem.types.all() %}
+                        <span>
+                            {{ type }}
+                        </span>
+                    {% endfor %}
+                </div>
+
+                <div class="problem_clsf_item clsf__timelimit">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                      
+                    Time limit: <span>{{problem.time_limit}} s</span>
+                </div>
+            </div>
+
+            <div class="problem_description">
+                <div class="content-description screen">
+
+                    {{ problem.description|markdown(problem.markdown_style, MATH_ENGINE)|reference|str|safe }}
+            
+                    {# uuuuvcomment #}
+                    {# I commented out these lines of code temporarily #}
+                    {# I will get back later #}
+                    {% if submission and False %}
+                        {% cache 86400 'problem_html' problem.id MATH_ENGINE LANGUAGE_CODE %}
+                            {{ description|markdown(problem.markdown_style, MATH_ENGINE)|reference|str|safe }}
+                        {% endcache %}  
+                    {% else %}
+                    {% endif %}
+
+                    {% with license=problem.license %}
+                        {% if license %}
+                            <span class="license">
+                                <a href="{{ url('license', license.key) }}">{{ license.display or license.name }}</a>
+                            </span>
+                        {% endif %}
+                    {% endwith %}
+                </div>
+            </div>
+        </div>
+    
+
+        <div class="codeplace">
+            {% if not request.user.is_authenticated %}
+                <div class="login_required_overlay">
+                    <div>
+                        <p>Login is needed to make submission</p>
+                        <a href="{{ url('auth_login') }}?next={{ LOGIN_RETURN_PATH|urlencode }}">{{ _('Login!') }}</a>
+                    </div>
+                </div>
+            {% else %}
+
+                <div class="toolbar">
+                    <button id="expand_button" onclick="expandEditor(event)" class="button">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h4.5m-4.5 0L9 15M20.25 3.75h-4.5m4.5 0v4.5m0-4.5L15 9m5.25 11.25h-4.5m4.5 0v-4.5m0 4.5L15 15" />
+                        </svg>
+                    </button>
+
+                    <button onclick="clearEditor()" type="button" class="button">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
+                        </svg>
+                        
+                        <span>reset</span>
+                    </button>
+                </div>
+
+                {# uuuuvcomment ***************************************************************** #}
+                {# uuuuvcomment ***************************************************************** #}
+                {# uuuuvcomment ************************ SUBMIT FORM **************************** #}
+                {# uuuuvcomment ***************************************************************** #}
+                {# uuuuvcomment ***************************************************************** #}
+                <form id="problem_submit" method="POST">
+                    {# uuuuvcomment ------------------------- choose languages ------------------------- #}
+                    {% if not no_judges %}
+                        <div id="language">
+                            {{ form.language.errors }}
+                            <div id="language-select">
+                                <select id="id_language" name="language">
+                                    {% for lang in form.fields.language.queryset %}
+                                        <option 
+                                            value="{{ lang.id }}" 
+                                            data-id="{{ lang.id }}" 
+                                            data-name="{{ lang.name }}"
+                                            data-info="{{ lang.info }}" 
+                                            data-ace="{{ lang.ace }}"
+                                            data-judge-info="{{ runtime_versions(lang.runtime_versions()) }}"
+                                            {% if lang.id == default_lang.id %}selected{% endif %}
+                                        >
+                                            {{ lang.name }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    {# uuuuvcomment ------------------------- warning ------------------------- #}
+                    <div class="codeplace_warning">
+                        {% if not no_judges %}
+                            {% if default_lang not in form.fields.language.queryset %}
+                                <div class="alert alert-warning alert-dismissable">
+                                    <a class="close">x</a>
+                                    <b>{{ _('Warning!') }}</b>
+                                    {{ _('Your default language, %(language)s, is unavailable for this problem and has been deselected.', language=bold(default_lang.name)) }}
+                                </div>
+                            {% endif %}
+                    
+                            {% if request.in_contest and submission_limit %}
+                                {% if submissions_left > 0 %}
+                                    <div class="alert alert-warning alert-dismissable">
+                                        <a class="close">x</a>
+                                        {% trans left=submissions_left -%}
+                                            You have {{ left }} submission left
+                                            {%- pluralize -%}
+                                            You have {{ left }} submissions left
+                                        {%- endtrans %}
+                                    </div>
+                                {% else %}
+                                    <div class="alert alert-warning alert-dismissable">
+                                        <a class="close">x</a>
+                                        {{ _('You have 0 submissions left') }}
+                                    </div>
+                                {% endif %}
+                            {% endif %}
+                        {% endif %}
+                    </div>
+
+                    {# uuuuvcomment ------------------------- editor ------------------------- #}
+                    <div class="codeplace_editor">
+                        {% csrf_token %}
+                        {{ form.non_field_errors() }}
+                        <div id="submit-wrapper">
+                            <div id="editor">
+                                {{ form.source.errors }}
+                                {{ form.source }}
+                            </div>
+                        </div>
+                    </div>
+
+                    {# uuuuvcomment ------------------------- submit button ------------------------- #}
+                    {# uuuuvcomment ------------------ or no judge is available --------------------- #}
+                    <div class="submitbar">
+                        {% if no_judges %}
+                            <span style="color: red">{{ _('No judge is available for this problem.') }}</span>
+                        {% else %}
+                            <div class="submit-bar">
+                                <div>
+                                    {{ form.judge }}
+                                </div>
+
+                                <div class="submitbar_buttons">
+                                    <input id="submit-button"  type="submit" value="{% if submission %}{{ _('Resubmit!') }}{% else %}{{ _('Submit') }}{% endif %}" class="button accent"
+                                    {% if request.in_contest and submission_limit and not submissions_left %}disabled{% endif %}>
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
+                </form>
+                {# uuuuvcomment ******************************************************************* #}
+                {# uuuuvcomment ******************************************************************* #}
+                {# uuuuvcomment ************************ REJUDGE FORM ***************************** #}
+                {# uuuuvcomment ******************************************************************* #}
+                {# uuuuvcomment ******************************************************************* #}
+                <div class="rejudge_wrapper">
+                    {% if submission and perms.judge.rejudge_submission and not submission.is_locked %}
+                    {% compress js %}
+                        <script type="text/javascript">
+                            window.confirm_and_rejudge = function (form) {
+                                if (confirm("{{ _('Are you sure you want to rejudge?') }}")) {
+                                    console.log(form)
+                                    form.submit()
+                                }
+                            };
+                        </script>
+                    {% endcompress %}
+                    <form id="rejudge_form" action="{{ url('submission_rejudge') }}" method="post">
+                        {% csrf_token %}
+                        <a href="#" onclick="confirm_and_rejudge(parentNode)" class="button">{{ _('Rejudge') }}</a>
+                        <input type="hidden" name="id" value="{{ submission.id }}" />
+                        <input type="hidden" name="path" value="{{ url('problem_submit', problem.code) }}" />
+                    </form>
+                {% endif %}
+                </div>
+                <div class="submission">
+                    <div class="submission_results">
+                        {% if submission and  not submission.is_graded and (request.user == submission.user.user or perms.judge.abort_any_submission) %}
+                            <div id="abort-button" class="d-none" >
+                                {# uuuuvcomment ***************************************************************** #}
+                                {# uuuuvcomment ***************************************************************** #}
+                                {# uuuuvcomment ************************ ABORT FORM ***************************** #}
+                                {# uuuuvcomment ***************************************************************** #}
+                                {# uuuuvcomment ***************************************************************** #}
+                                <form action="{{ url('submission_abort', submission.id) }}" method="post"
+                                    title="{{ _('Press Ctrl-Enter or Command-Enter to abort.') }}">
+                                    {% csrf_token %}
+                                    <input style="float:left" type="submit" value="{{ _('Abort') }}" class="button"/>
+                                </form>
+                            </div>
+                        {% endif %}
+
+                        {% if submission %}
+                            <span class="submission-info">
+                                <span class="submission-date">
+                                    {# uuuuvcomment ***************************************************************** #}
+                                    {# uuuuvcomment ***************************************************************** #}
+                                    {# uuuuvcomment ************************ SUBMISSION INFO ************************ #}
+                                    {# uuuuvcomment ***************************************************************** #}
+                                    {# uuuuvcomment ***************************************************************** #}
+                                    {% with date=submission.date|date(_('N j, Y, g:i a')), can_edit=submission.problem.is_editable_by(request.user) %}
+                                        {% if can_edit and submission.judged_on %}
+                                            {{ _('%(date)s on %(judge)s', date=date, judge=submission.judged_on.name) }}
+                                        {% else %}
+                                            {{ date }}
+                                        {% endif %}
+                                        <br>
+                                        <span>{{ submission.language }}</span>
+                                        {% if can_edit %}
+                                            [<a href="{{ url('admin:judge_submission_change', submission.id) }}">{{ _('Admin') }}</a>]
+                                        {% endif %}
+                                    {% endwith %}
+                                </span>
+                            </span>
+
+                            {# uuuuvcomment ***************************************************************** #}
+                            {# uuuuvcomment ***************************************************************** #}
+                            {# uuuuvcomment ************** SUBMISSION RESULT AND LOADING ******************** #}
+                            {# uuuuvcomment ***************************************************************** #}
+                            {# uuuuvcomment ***************************************************************** #}
+                            <div id="test-cases">{% include "problem/submission-status.html" %}</div>
+
+                        {% endif %}
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% compress js %}
+<script type="text/javascript">
+    // horizontal resizing
+    $('.codeplace').resizable({
+        direction: ['left']
+    })
+
+    // update #ace_source height when and after vertical resizing
+    $('.codeplace_editor').resizable({
+        direction: ['bottom'],
+        resize: () => {
+            $('#ace_source').height($('.codeplace_editor').height())
+        },
+        stop: () => {
+            $('#ace_source').height($('.codeplace_editor').height())
+            console.log('ace height',  $('#ace_source').height());
+            console.log('codeplace_editor',  $('.codeplace_editor').height());
+            window.aceEditor.resize()
+        }
+    })
+
+    // set initial height to #ace_source
+    $('#ace_source').height($('.codeplace_editor').height());
+
+
+    // clear code in editor 
+    function clearEditor() {
+        var source = $('textarea#id_source');
+        console.log(source)
+        console.log(source.val())
+        source.val('') 
+        window.ace_source.getSession().setValue('');
+    }
+
+    // collapse - expand editor 100% 
+    function expandEditor(event) {
+        var collapse = 
+            `
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 9V4.5M9 9H4.5M9 9L3.75 3.75M9 15v4.5M9 15H4.5M9 15l-5.25 5.25M15 9h4.5M15 9V4.5M15 9l5.25-5.25M15 15h4.5M15 15v4.5m0-4.5l5.25 5.25" />
+            </svg>
+            `;
+        
+        var expand = 
+            `
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h4.5m-4.5 0L9 15M20.25 3.75h-4.5m4.5 0v4.5m0-4.5L15 9m5.25 11.25h-4.5m4.5 0v-4.5m0 4.5L15 15" />
+            </svg>
+            `;
+
+
+        var codeplace = $('.codeplace');
+        codeplace.toggleClass('expand')
+        if (codeplace.hasClass('expand')) {
+            event.target.innerHTML = collapse;
+        } else {
+            event.target.innerHTML = expand;
+        }
+    }
+
+    // render resizer buttons
+    var vertical = 
+        `
+        <div class="resizer resizer-v">
+            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="17" height="17" viewBox="0 0 17 17">
+                <g></g>
+                <path d="M11.642 12.063l0.716 0.698-3.858 3.955-3.858-3.954 0.716-0.698 2.642 2.707v-12.542l-2.642 2.708-0.716-0.699 3.858-3.954 3.858 3.954-0.716 0.698-2.642-2.707v12.543l2.642-2.709z" fill="inherit" />
+            </svg>
+        </div>
+        `;
+
+    var horizontal = 
+        `
+        <div class="resizer resizer-h">
+            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="17" height="17" viewBox="0 0 17 17">
+                <g></g>
+                <path d="M16.716 8.5l-3.954 3.858-0.698-0.716 2.707-2.642h-12.542l2.708 2.642-0.698 0.716-3.955-3.858 3.954-3.858 0.698 0.716-2.707 2.642h12.543l-2.708-2.642 0.698-0.716 3.954 3.858z" fill="inherit" />
+            </svg>
+        </div>
+        `;
+
+    $('.codeplace .resizable-l')[0].innerHTML = horizontal;
+    $('.codeplace .resizable-b')[0].innerHTML = vertical;
+</script>
+{% endcompress %}
+{% endblock %}
