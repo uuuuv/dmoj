@@ -974,3 +974,47 @@ INFO 2023-06-10 13:58:23,961 judge_handler jd1: Grading has begun on: 109
 INFO 2023-06-10 13:58:24,038 judge_handler jd1: 2 test case(s) completed on: 109
 INFO 2023-06-10 13:58:24,042 judge_handler jd1: Grading has ended on: 109
 INFO 2023-06-10 13:58:24,042 judge_list Judge available after grading 109: jd1
+INFO 2023-06-10 16:46:40,833 daemon Exiting due to SIGINT
+INFO 2023-06-11 01:22:55,663 judge_handler Judge connected from: ('172.17.0.2', 42834)
+INFO 2023-06-11 01:22:55,667 judge_handler Judge authenticated: ('172.17.0.2', 42834) (jd1)
+INFO 2023-06-11 01:29:13,868 judge_list Free judges: 1
+INFO 2023-06-11 01:29:13,868 judge_list Dispatched submission 95 to: jd1
+INFO 2023-06-11 01:29:13,874 judge_handler Submission acknowledged: 95
+INFO 2023-06-11 01:29:13,982 judge_handler jd1: Submission failed to compile: 95
+INFO 2023-06-11 01:29:13,983 judge_list Judge available after grading 95: jd1
+INFO 2023-06-11 01:29:19,610 judge_list Abort request: 95
+INFO 2023-06-11 01:29:23,868 judge_list Free judges: 1
+INFO 2023-06-11 01:29:23,869 judge_list Dispatched submission 110 to: jd1
+INFO 2023-06-11 01:29:23,873 judge_handler Submission acknowledged: 110
+INFO 2023-06-11 01:29:23,973 judge_handler jd1: Submission failed to compile: 110
+INFO 2023-06-11 01:29:23,973 judge_list Judge available after grading 110: jd1
+INFO 2023-06-11 01:29:27,239 judge_list Abort request: 110
+INFO 2023-06-11 01:29:59,338 judge_list Free judges: 1
+INFO 2023-06-11 01:29:59,338 judge_list Dispatched submission 111 to: jd1
+INFO 2023-06-11 01:29:59,343 judge_handler Submission acknowledged: 111
+INFO 2023-06-11 01:29:59,441 judge_handler jd1: Submission generated compiler messages: 111
+INFO 2023-06-11 01:29:59,443 judge_handler jd1: Grading has begun on: 111
+INFO 2023-06-11 01:29:59,530 judge_handler jd1: 2 test case(s) completed on: 111
+INFO 2023-06-11 01:29:59,586 judge_handler jd1: 1 test case(s) completed on: 111
+INFO 2023-06-11 01:29:59,588 judge_handler jd1: Grading has ended on: 111
+INFO 2023-06-11 01:29:59,588 judge_list Judge available after grading 111: jd1
+INFO 2023-06-11 02:47:55,748 daemon Exiting due to SIGINT
+INFO 2023-06-11 10:58:54,312 judge_handler Judge connected from: ('172.17.0.2', 38710)
+INFO 2023-06-11 10:58:54,315 judge_handler Judge authenticated: ('172.17.0.2', 38710) (jd1)
+INFO 2023-06-11 11:37:21,920 judge_list Free judges: 1
+INFO 2023-06-11 11:37:21,920 judge_list Dispatched submission 112 to: jd1
+INFO 2023-06-11 11:37:21,935 judge_handler Submission acknowledged: 112
+INFO 2023-06-11 11:37:22,038 judge_handler jd1: Submission generated compiler messages: 112
+INFO 2023-06-11 11:37:22,039 judge_handler jd1: Grading has begun on: 112
+INFO 2023-06-11 11:37:22,099 judge_handler jd1: 1 test case(s) completed on: 112
+INFO 2023-06-11 11:37:22,104 judge_handler jd1: 1 test case(s) completed on: 112
+INFO 2023-06-11 11:37:22,107 judge_handler jd1: Grading has ended on: 112
+INFO 2023-06-11 11:37:22,107 judge_list Judge available after grading 112: jd1
+INFO 2023-06-11 11:56:02,580 judge_list Free judges: 1
+INFO 2023-06-11 11:56:02,580 judge_list Dispatched submission 113 to: jd1
+INFO 2023-06-11 11:56:02,585 judge_handler Submission acknowledged: 113
+INFO 2023-06-11 11:56:02,689 judge_handler jd1: Submission generated compiler messages: 113
+INFO 2023-06-11 11:56:02,691 judge_handler jd1: Grading has begun on: 113
+INFO 2023-06-11 11:56:02,766 judge_handler jd1: 2 test case(s) completed on: 113
+INFO 2023-06-11 11:56:02,770 judge_handler jd1: Grading has ended on: 113
+INFO 2023-06-11 11:56:02,771 judge_list Judge available after grading 113: jd1

@@ -297,7 +297,26 @@
 
             <div class="problem_description">
                 <div class="content-description screen">
-
+                    {# uuuuvcomment ***************************************************************** #}
+                    {# uuuuvcomment ***************************************************************** #}
+                    {# uuuuvcomment **************** PROBLEM DESCRIPTION **************************** #}
+                    {# uuuuvcomment ***************************************************************** #}
+                    {# uuuuvcomment ***************************************************************** #}
+                    <h3>Problem test cases</h3>
+                    {% for case in problem.cases.all() %}
+                        <ul style="margin-bottom: 8px;">
+                            <li>order: {{ case.order }}</li>
+                            <li>type: {{ case.type }}</li>
+                            <li>input_file: {{ case.input_file }}</li>
+                            <li>output_file: {{ case.output_file }}</li>
+                            <li>generator_args: {{ case.generator_args }}</li>
+                            <li>points: {{ case.points }}</li>
+                            <li>output_prefix: {{ case.output_prefix }}</li>
+                            <li>output_limit: {{ case.output_limit }}</li>
+                            <li>checker: {{ case.checker }}</li>
+                            <li>checker_args: {{ case.checker_args }}</li>
+                        </ul>
+                    {% endfor %}
                     {{ problem.description|markdown(problem.markdown_style, MATH_ENGINE)|reference|str|safe }}
             
                     {# uuuuvcomment #}
