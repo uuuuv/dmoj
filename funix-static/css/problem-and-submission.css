@@ -271,7 +271,7 @@
 /* test cases and submit bar */
 .submission {
     height: 50%;
-    overflow: auto;
+    overflow: hidden;
     border-top: .5px solid var(--border);
     width: 100% !important;
 }
@@ -317,6 +317,8 @@
 
 .submission { 
     position: relative;
+    flex: 1;
+    overflow: auto;
 }
 
 
@@ -335,11 +337,12 @@
     transform: translate(-50%, -50%);
 }
 
-.submission_results #test-cases h4 {
+/* loading text  */
+#submission_results h4 {
     position: absolute;
-    top: calc(50% - 40px);
+    top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%);
+    transform: translate(-50%, 30px);
 }
 
 
@@ -367,6 +370,145 @@
     box-shadow: var(--shadow-border);
     border: .5px solid #ccc;    
 }
+
+/* test cases  */
+.tabs .tab.active, .tabs .tab:hover {
+    background: #c5c5c5;
+}
+
+.tab_content:not(.active) {
+    display: none !important;
+}
+
+.tab_content.active {
+    display: block;
+}
+
+.tab {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    justify-content: space-between;
+}
+
+.tab svg {
+    width: 20px;
+}
+
+.submission {
+    height: 100%;
+    overflow: hidden;
+}
+
+.submission > .tabs {
+    height: 40px;
+    padding: 0;
+    display: flex;
+    justify-content: start;
+}
+
+.submission > .tabs .tab {
+    padding: 0 20px;
+}
+
+.submission > .tabs .tab:first-child {
+    border-right: .5px solid #999999;
+}
+
+.submission > .tab_contents {
+    height: calc(100% - 40px);
+    overflow: hidden;
+}
+
+#testcases {
+    display: flex;
+    flex-wrap: nowrap;
+    height: 100%;
+    overflow: hidden;
+}
+
+#testcases .tabs {
+    width: 150px;
+    flex-shrink: 0;
+    height: 100%;
+    overflow: auto;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: block;
+    border-right: .5px solid #ccc;
+}
+
+#testcases .tabs .tab {
+    padding: 8px;
+    border-bottom: .5px solid #ccc;
+    cursor: pointer;
+    width: 100%;
+    height: 40px;
+}
+
+#testcases .tabs .tab.subcase {
+    padding-left: 30px;
+    
+}
+
+#testcases .tab_content  {
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    padding: 8px;
+    margin: 0;
+}
+
+
+
+.testcase_data_item {
+    margin-bottom: 20px;
+    display: flex;
+}
+
+.testcase_data_item > label {
+   width: 150px;
+   padding: 8px;
+   flex-shrink: 0;
+   display: block;
+   font-weight: bold;
+}
+
+.testcase_data_item .outer_wrapper {
+    background: #e9e9e9;
+    border: .5px solid #ccc;
+    max-height: 200px;
+    overflow: auto;
+    flex: 1;
+    width: calc(100% - 300px);
+}
+
+.testcase_data_item .inner_wrapper {
+   display: flex;
+}
+
+.testcase_data_item .inner_wrapper pre {
+    flex-shrink: 0;
+}
+
+.testcase_data_item  pre {
+    white-space: pre-line;
+    display: block;
+    word-wrap: break-word;
+    padding: 8px;
+}
+
+
+/* abort button  */
+#abort-button input[type=submit] {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
 
 @media screen and (max-width: 992px) {
     .main {

@@ -1018,3 +1018,4 @@ INFO 2023-06-11 11:56:02,691 judge_handler jd1: Grading has begun on: 113
 INFO 2023-06-11 11:56:02,766 judge_handler jd1: 2 test case(s) completed on: 113
 INFO 2023-06-11 11:56:02,770 judge_handler jd1: Grading has ended on: 113
 INFO 2023-06-11 11:56:02,771 judge_list Judge available after grading 113: jd1
+INFO 2023-06-11 16:32:34,705 daemon Exiting due to SIGINT

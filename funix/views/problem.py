@@ -931,6 +931,7 @@ class FunixProblemSubmit( ProblemMixin, TitleMixin, SingleObjectFormView):
         initial = {'language': self.default_language}
         if self.old_submission is not None:
             initial['source'] = self.old_submission.source.source
+        self.initial = initial
         return initial
 
     def get_form_kwargs(self):
@@ -1058,7 +1059,6 @@ class FunixProblemSubmit( ProblemMixin, TitleMixin, SingleObjectFormView):
 
     # get context data 
     def get_context_data(self, **kwargs):
-        user = self.request.user
         context = super().get_context_data(**kwargs)
         context['langs'] = Language.objects.all()
         context['no_judges'] = not context['form'].fields['language'].queryset
@@ -1066,8 +1066,47 @@ class FunixProblemSubmit( ProblemMixin, TitleMixin, SingleObjectFormView):
         context['submissions_left'] = self.remaining_submission_count
         context['ACE_URL'] = settings.ACE_URL
         context['default_lang'] = self.default_language
+
+        problem = context['problem']
+
+        batch_order = 1
+        sub_order = 1
+        in_batch = 0
+        testcases_map = []
+        haiz = []
+        for case in problem.cases.all(): 
+            item = {"order": case.order, "type": case.type}
+            item['is_pretest'] = case.is_pretest
+            item['batch_order'] = batch_order
+            haiz_item = {}
+            haiz_item['batch_order'] = batch_order
+
+            if case.type == 'S':
+                in_batch = 1
+
+            elif case.type == 'C' and in_batch == 1:
+                item['sub_order'] = sub_order
+                sub_order += 1
+
+            elif case.type == 'C' and in_batch == 0:
+                item['batch_order'] = batch_order
+                batch_order = batch_order + 1
+
+            else:
+                in_batch = 0
+                batch_order = batch_order + 1
+                sub_order = 1
+            
+            if case.type != 'E':
+                testcases_map.append(item)
+
+        context['testcases_map'] = testcases_map
+        context['haiz'] = haiz
+
         
         submission = self.old_submission
+        context['old_submission'] = self.initial
+
         if submission is not None:
             context['submission'] = submission
 

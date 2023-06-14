@@ -74,7 +74,6 @@ class ProblemData(models.Model):
         self.save()
     _update_code.alters_data = True
 
-
 class ProblemTestCase(models.Model):
     dataset = models.ForeignKey('Problem', verbose_name=_('problem data set'), related_name='cases',
                                 on_delete=models.CASCADE)
@@ -94,3 +93,5 @@ class ProblemTestCase(models.Model):
     checker = models.CharField(max_length=10, verbose_name=_('checker'), choices=CHECKERS, blank=True)
     checker_args = models.TextField(verbose_name=_('checker arguments'), blank=True,
                                     help_text=_('Checker arguments as a JSON object.'))
+
+

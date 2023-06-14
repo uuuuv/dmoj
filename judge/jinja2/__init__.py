@@ -23,6 +23,7 @@ registry.function('mptt_tree', get_cached_trees)
 registry.function('user_trans', gettext)
 
 
+
 @registry.function
 def counter(start=1):
     return itertools.count(start).__next__

@@ -51,7 +51,6 @@ class ProblemDataCompiler(object):
         self.data = data
         self.cases = cases
         self.files = files
-
         self.generator = data.generator
 
     def make_init(self):

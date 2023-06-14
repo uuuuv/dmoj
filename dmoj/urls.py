@@ -393,11 +393,9 @@ if 'impersonate' in settings.INSTALLED_APPS:
 
 # uuuuvcomment
 # **********************************************************************
-# **********************************************************************
 # ********************** OVERRIDE URLPATTERNS **************************
 # **********************************************************************
-# **********************************************************************
-from judge.funix_views import problem as funix_problem, submission as funix_submission
+from funix.views import problem as funix_problem, submission as funix_submission
 urlpatterns = [
     path('', blog.PostList.as_view(template_name='home.html', title=_('Home')), kwargs={'page': 1}, name='home'),
     path('500/', exception),

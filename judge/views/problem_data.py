@@ -184,9 +184,9 @@ class ProblemDataView(TitleMixin, ProblemManagerMixin):
     def post(self, request, *args, **kwargs):
         self.object = problem = self.get_object()
         data_form = self.get_data_form(post=True)
-        valid_files = self.get_valid_files(data_form.instance, post=True)
+        valid_files = self.get_valid_files(data_form.instance, post=True) # list of archive members
         data_form.zip_valid = valid_files is not False
-        cases_formset = self.get_case_formset(valid_files, post=True)
+        cases_formset = self.get_case_formset(valid_files, post=True) # what is case_formset?
         if data_form.is_valid() and cases_formset.is_valid():
             data = data_form.save()
             for case in cases_formset.save(commit=False):
@@ -194,7 +194,7 @@ class ProblemDataView(TitleMixin, ProblemManagerMixin):
                 case.save()
             for case in cases_formset.deleted_objects:
                 case.delete()
-            ProblemDataCompiler.generate(problem, data, problem.cases.order_by('order'), valid_files)
+            ProblemDataCompiler.generate(problem, data, problem.cases.order_by('order'), valid_files) # the main point is that need to save after dmoj completed checking and generating
             return HttpResponseRedirect(request.get_full_path())
         return self.render_to_response(self.get_context_data(data_form=data_form, cases_formset=cases_formset,
                                                              valid_files=valid_files))
