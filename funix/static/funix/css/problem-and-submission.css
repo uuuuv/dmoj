@@ -35,6 +35,9 @@
   display: none;
 }
 
+.authors-value {
+  padding-left: 2px;
+}
 /* scrollbar  */
 /* width */
 ::-webkit-scrollbar {
@@ -525,6 +528,7 @@
     height: auto;
     display: block;
     border-top: 0.5px solid var(--border);
+    border-left: none;
   }
 
   .codeplace #expand_button {
