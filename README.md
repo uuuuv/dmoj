@@ -14,15 +14,16 @@
   `pip3 install websocket-client`
 - Các bước còn lại làm tương tự, sửa lại cấu hình cho phù hợp.
 - Copy thư mục `funix/static/funix` vào thư mục `STATIC_ROOT` trong `local_settings.py`.
-- Cấc trúc thư mục hiện tại của bản này tương ứng với file cấu hình: \\r\\n
-  /projects \\r\\n
-  |\_\_\_\_\_foj \\r\\n
-  ............|\_\_\_\_\_site \\r\\n
-  ............|\_\_\_\_\_venv \\r\\n
-  ............|\_\_\_\_\_static \\r\\n
-  ............|\_\_\_\_\_tmp \\r\\n
-  ............|\_\_\_\_\_problems \\r\\n
-  ............|\_\_\_\_\_cache \\r\\n
+- Cấc trúc thư mục hiện tại của bản này tương ứng với file cấu hình:
+
+/projects
+|\_\_\_\_\_foj
+............|\_\_\_\_\_site
+............|\_\_\_\_\_venv
+............|\_\_\_\_\_static
+............|\_\_\_\_\_tmp
+............|\_\_\_\_\_problems
+............|\_\_\_\_\_cache
 
 # SỦ DỤNG
 
