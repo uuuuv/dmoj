@@ -16,13 +16,31 @@
 - Copy thư mục `funix/static/funix` vào thư mục `STATIC_ROOT` trong `local_settings.py`.
 - Cấc trúc thư mục hiện tại của bản này tương ứng với file cấu hình:
   /projects
-  |\***\*\_\_\*\***foj
-  ............|\_\_\_\_\_site
-  ............|\_\_\_\_\_venv
-  ............|\_\_\_\_\_static
-  ............|\_\_\_\_\_tmp
-  ............|\_\_\_\_\_problems
+  |\_\_\_\_\_foj  
+  ............|\_\_\_\_\_site  
+  ............|\_\_\_\_\_venv  
+  ............|\_\_\_\_\_static  
+  ............|\_\_\_\_\_tmp  
+  ............|\_\_\_\_\_problems  
   ............|\_\_\_\_\_cache
+
+# SỦ DỤNG
+
+1. Vào danh sách problems: domain/problems/
+2. Chọn problem: domain/problem/<problem_code>
+3. Click 'Submit solution'. Sẽ vào trang đề bài và code.
+
+- Chưa đăng nhập thì ở phần editor sẽ hiển thị yêu cầu đăng nhập.
+- Nếu chưa submit lần nào thì sẽ chỉ hiển thị nút `submit`.
+- Nếu đã submit trước đó thì editor sẽ load code của lần mới nhất, và hiển thị nút `resubmit` thay vì `submit`.
+
+4. Nếu muốn đến 1 submission cũ (không phải mới nhất) thì tới route:  
+   domain/problem/<problem_code>/resubmit/<submission_id>
+   Để đến được route này:
+
+- Vào danh sách submission của bạn.
+- Chọn xem kết quả 1 submission bằng click `view`.
+- Tại trang submission status vừa được chuyển tới, click `resubmit`. Xong.
 
 # Hardware requirements
 
