@@ -1,0 +1,540 @@
+/* override  */
+.window-visible {
+  width: 100%;
+  max-width: 100%;
+}
+#page-container {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  height: 100vh;
+}
+
+#page-container footer,
+#page-container hr:first-of-type,
+#page-container br:first-of-type,
+#page-container h2:first-of-type {
+  display: none !important;
+}
+
+#content {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  overflow: hidden;
+}
+
+#content-body {
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  padding-top: 44px;
+}
+
+.codeplace .django-ace-toolbar {
+  display: none;
+}
+
+/* scrollbar  */
+/* width */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  /* background: #f1f1f1; */
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #afafaf;
+  border-radius: 999px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+.resizable-handle {
+  background: transparent !important;
+  position: relative;
+}
+
+.resizer {
+  top: 50%;
+  left: 50%;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+}
+
+.resizer svg {
+  fill: rgb(102, 102, 102);
+}
+
+/* general  */
+:root {
+  --topbar-height: 44px;
+  --sidebar-width: 60px;
+  --problem-clsf-height: 90px;
+  --border: #535353;
+}
+
+.d-none {
+  display: none;
+}
+
+.clearfloat::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
+/* problem page  */
+.problem_container {
+  height: 100%;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.problem_container * {
+  box-sizing: border-box;
+}
+
+/* topbar  */
+.topbar {
+  height: var(--topbar-height) !important;
+  min-height: var(--topbar-height);
+  max-height: var(--topbar-height);
+  border-bottom: 0.5px solid var(--border);
+  padding-left: var(--sidebar-width);
+  line-height: var(--topbar-height);
+  font-size: 17px;
+  font-weight: bold;
+  box-shadow: var(--box-shadow);
+  width: 100%;
+}
+
+/* sidebar  */
+.sidebar {
+  width: var(--sidebar-width);
+  height: calc(100% - var(--topbar-height));
+  box-shadow: var(--box-shadow);
+  border-right: 0.5px solid var(--border);
+}
+
+.sidebar a {
+  width: 100%;
+  padding: 10px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sidebar a:hover {
+  cursor: pointer;
+}
+
+.sidebar a.active {
+  background: #2980b9;
+  color: white;
+}
+
+.sidebar svg {
+  width: 30px;
+}
+
+.main {
+  width: calc(100% - var(--sidebar-width));
+  height: calc(100% - var(--topbar-height));
+  display: flex;
+  flex: 1;
+}
+
+.problem_details {
+  height: calc(100% - var(--topbar-height));
+  flex: 1;
+  overflow: auto;
+}
+
+.problem_clsf {
+  border-bottom: 0.5px solid var(--border);
+  padding: 0 8px;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  flex-wrap: wrap;
+}
+
+.problem_clsf_item {
+  height: 30px;
+  display: flex;
+  align-items: center;
+  margin: 8px;
+  gap: 2px;
+  white-space: nowrap;
+}
+
+.problem_clsf_item svg {
+  width: 18px;
+}
+
+.clsf_author,
+.clsf_author a {
+  color: rgb(146, 146, 235);
+  text-decoration: underline;
+}
+
+.clsf_points svg {
+  color: rgb(165, 14, 107);
+}
+
+.clsf_memorylimit svg {
+  color: rgb(14, 130, 165);
+}
+
+.clsf_type svg {
+  color: rgb(14, 165, 34);
+}
+
+.clsf__timelimit svg {
+  color: rgb(97, 14, 165);
+}
+
+.problem_description {
+  padding: 8px;
+  padding-bottom: 20px;
+}
+
+.codeplace {
+  width: 50%;
+  height: calc(100% - var(--topbar-height));
+  border-left: 0.5px solid var(--border);
+  padding: 0 8px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 300px;
+}
+
+.codeplace.expand {
+  width: 100% !important;
+}
+
+.codeplace .button,
+.codeplace input[type="submit"] {
+  height: 30px;
+  border-radius: 3.6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 0 10px !important;
+}
+
+.button svg {
+  width: 18px;
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 50px;
+  padding: 0 4px;
+  flex-shrink: 0;
+  border-bottom: 0.5px solid var(--border);
+}
+
+#language {
+  margin: 0;
+}
+
+#problem_submit .select2-container {
+  width: 100% !important;
+}
+
+/* --------------- editor --------------- */
+.codeplace_editor {
+  padding: 10px;
+  height: 500px;
+}
+
+/* test cases and submit bar */
+.submission {
+  height: 50%;
+  overflow: hidden;
+  border-top: 0.5px solid var(--border);
+  width: 100% !important;
+}
+
+.submitbar {
+  width: 100%;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  border-bottom: 0.5px solid var(--border);
+  box-sizing: border-box;
+}
+
+.submitbar .submit-bar {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  float: none !important;
+  max-width: 100%;
+  box-sizing: border-box;
+  padding: 0;
+}
+
+.rejudge_wrapper {
+  height: 0;
+  position: relative;
+}
+
+.rejudge_wrapper #rejudge_form {
+  position: absolute;
+  bottom: 8px;
+  right: 100px;
+}
+
+#submit-button.disabled {
+  pointer-events: none !important;
+}
+
+#abort-button {
+  display: inline-block;
+}
+
+.submission {
+  position: relative;
+  flex: 1;
+  overflow: auto;
+}
+
+.submission_results {
+  width: 100%;
+  padding: 20px;
+  width: 100% !important;
+  position: relative;
+  min-height: 100%;
+}
+
+.submission_results #abort-button {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* loading text  */
+#submission_results h4 {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, 30px);
+}
+
+.login_required_overlay {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+.login_required_overlay div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.login_required_overlay a {
+  padding: 8px 20px;
+  box-shadow: var(--shadow-border);
+  border: 0.5px solid #ccc;
+}
+
+/* test cases  */
+.tabs .tab.active,
+.tabs .tab:hover {
+  background: #c5c5c5;
+}
+
+.tab_content:not(.active) {
+  display: none !important;
+}
+
+.tab_content.active {
+  display: block;
+}
+
+.tab {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  justify-content: space-between;
+}
+
+.tab svg {
+  width: 20px;
+}
+
+.submission {
+  height: 100%;
+  overflow: hidden;
+}
+
+.submission > .tabs {
+  height: 40px;
+  padding: 0;
+  display: flex;
+  justify-content: start;
+}
+
+.submission > .tabs .tab {
+  padding: 0 20px;
+}
+
+.submission > .tabs .tab:first-child {
+  border-right: 0.5px solid #999999;
+}
+
+.submission > .tab_contents {
+  height: calc(100% - 40px);
+  overflow: hidden;
+}
+
+#testcases {
+  display: flex;
+  flex-wrap: nowrap;
+  height: 100%;
+  overflow: hidden;
+}
+
+#testcases .tabs {
+  width: 150px;
+  flex-shrink: 0;
+  height: 100%;
+  overflow: auto;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  display: block;
+  border-right: 0.5px solid #ccc;
+}
+
+#testcases .tabs .tab {
+  padding: 8px;
+  border-bottom: 0.5px solid #ccc;
+  cursor: pointer;
+  width: 100%;
+  height: 40px;
+}
+
+#testcases .tabs .tab.subcase {
+  padding-left: 30px;
+}
+
+#testcases .tab_content {
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  padding: 8px;
+  margin: 0;
+}
+
+.testcase_data_item {
+  margin-bottom: 20px;
+  display: flex;
+}
+
+.testcase_data_item > label {
+  width: 150px;
+  padding: 8px;
+  flex-shrink: 0;
+  display: block;
+  font-weight: bold;
+}
+
+.testcase_data_item .outer_wrapper {
+  background: #e9e9e9;
+  border: 0.5px solid #ccc;
+  max-height: 200px;
+  overflow: auto;
+  flex: 1;
+  width: calc(100% - 300px);
+}
+
+.testcase_data_item .inner_wrapper {
+  display: flex;
+}
+
+.testcase_data_item .inner_wrapper pre {
+  flex-shrink: 0;
+}
+
+.testcase_data_item pre {
+  white-space: pre-line;
+  display: block;
+  word-wrap: break-word;
+  padding: 8px;
+}
+
+/* abort button  */
+#abort-button input[type="submit"] {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+@media screen and (max-width: 992px) {
+  .main {
+    display: block;
+    overflow: auto;
+  }
+
+  .problem_details {
+    height: auto;
+    overflow: auto;
+  }
+
+  .codeplace {
+    width: 100% !important;
+    height: auto;
+    display: block;
+    border-top: 0.5px solid var(--border);
+  }
+
+  .codeplace #expand_button {
+    display: none;
+  }
+
+  .codeplace .toolbar {
+    justify-content: end;
+  }
+
+  .codeplace .resizable-l {
+    display: none;
+  }
+}

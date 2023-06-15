@@ -132,9 +132,8 @@
             </a> 
     </div>
 
-    <div class="main clearfloat">
+    <div class="main">
         <div class="problem_details">
-            <iframe src="http://13.214.48.72/problems/" name="myIFrame" scrolling="auto" width="50%" height="50%" style="border: 2px solid #000000;"></iframe>
             {% include "problem/problem-details.html" %}
         </div>
     
@@ -166,9 +165,7 @@
                 </div>
 
                 {# uuuuvcomment ***************************************************************** #}
-                {# uuuuvcomment ***************************************************************** #}
                 {# uuuuvcomment ************************ SUBMIT FORM **************************** #}
-                {# uuuuvcomment ***************************************************************** #}
                 {# uuuuvcomment ***************************************************************** #}
                 <form id="problem_submit" method="POST">
                     {# uuuuvcomment ------------------------- choose languages ------------------------- #}
@@ -258,9 +255,7 @@
                     </div>
                 </form>
                 {# uuuuvcomment ******************************************************************* #}
-                {# uuuuvcomment ******************************************************************* #}
                 {# uuuuvcomment ************************ REJUDGE FORM ***************************** #}
-                {# uuuuvcomment ******************************************************************* #}
                 {# uuuuvcomment ******************************************************************* #}
                 <div class="rejudge_wrapper">
                     {% if submission and perms.judge.rejudge_submission and not submission.is_locked %}
