@@ -30,22 +30,17 @@
 ............|\_\_\_\_\_cache
 
 # SỦ DỤNG
+#### routes mới
+1. /beta/problem/<problem code>
+2. /beta/problem/<problem code>/submission/<submission id>
+3. /beta/problem/<problem code>/comments 
+4. /beta/problems
+Các route trên, để hiển ẩn thanh navbar để hiển thị trong <iframe>, thêm query `?iframe=1` vào.
+Khi vào các trang trên sẽ có thanh sidebar, đều là `iframe=1`
 
-1. Vào danh sách problems: domain/problems/
-2. Chọn problem: domain/problem/<problem_code>
-3. Click 'Submit solution'. Sẽ vào trang đề bài và code.
-
-- Chưa đăng nhập thì ở phần editor sẽ hiển thị yêu cầu đăng nhập.
-- Nếu chưa submit lần nào thì sẽ chỉ hiển thị nút `submit`.
-- Nếu đã submit trước đó thì editor sẽ load code của lần mới nhất, và hiển thị nút `resubmit` thay vì `submit`.
-
-4. Nếu muốn đến 1 submission cũ (không phải mới nhất) thì tới route:  
-   domain/problem/<problem_code>/resubmit/<submission_id>
-   Để đến được route này:
-
-- Vào danh sách submission của bạn.
-- Chọn xem kết quả 1 submission bằng click `view`.
-- Tại trang submission status vừa được chuyển tới, click `resubmit`. Xong.
+Cách vào các routes trên: 
+1. Vào danh sách problem, chọn 1 problem, chọn 'Submit solution beta'
+2. Gõ thẳng vào address bar.
 
 # Hardware requirements
 
