@@ -1,0 +1,19 @@
+{% extends 'funix/base.html' %} 
+{% block media %}
+  <link rel="stylesheet" href="{{ static('funix/css/base.css') }}" />
+
+  {% block media_child %}
+  {% endblock %}
+{% endblock %} 
+
+
+
+
+{% block body %}
+<div id="beta-container" >
+  <div id="sidebar">{% include "funix/problem/sidebar.html" %}</div>
+
+  <div id="main">{% block problem_content %} {% endblock %}</div>
+</div>
+
+{% endblock %}
