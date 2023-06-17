@@ -147,7 +147,7 @@ is_pretest and submission.result == "AC" %}
         print_case_output %}
 
         <div class="your_output">
-          <strong class="togglebutton" onclick="toggle(event)">
+          <p class="togglebutton" onclick="toggle(event)">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -163,7 +163,7 @@ is_pretest and submission.result == "AC" %}
               />
             </svg>
             {{ _('Your output (clipped)') }}:
-          </strong>
+          </p>
           {% if prefix_length is none %}
           <div>
             <pre class="case-output">{{ case.output|linebreaksbr }}</pre>
@@ -176,11 +176,7 @@ is_pretest and submission.result == "AC" %}
           </div>
           {% endif %}
         </div>
-        <script type="text/javascript">
-          const toggle = (event) => {
-            event.target.classList.toggle("show");
-          };
-        </script>
+
         {% endif %} {% if case.extended_feedback %}
         <div class="case-info">
           <p><b>judge feed back</b></p>
@@ -199,3 +195,9 @@ is_pretest and submission.result == "AC" %}
 
 {% endif %} {% else %} {% include "submission/internal-error-message.html" %} {%
 endif %}
+
+<script type="text/javascript">
+  const toggle = (event) => {
+    event.target.classList.toggle("show");
+  };
+</script>

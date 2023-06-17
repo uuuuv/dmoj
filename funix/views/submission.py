@@ -212,9 +212,10 @@ def abort_submission(request, submission):
        (submission.rejudged_date is not None or request.profile != submission.user)):
         raise PermissionDenied()
     submission.abort()
-    # return reverse('problem_submit', args=(self.new_submission.problem.code,))
-    return HttpResponseRedirect(reverse('problem_submit', args=(submission.problem.code,)))
-    # return HttpResponseRedirect(reverse('submission_status', args=(submission.id,)))
+    query = ''
+    if request.GET.get('iframe') == '1':
+        query = '?iframe=1'
+    return HttpResponseRedirect(reverse('beta_problem', args=(submission.problem.code,)) + query)
 
 
 def filter_submissions_by_visible_problems(queryset, user):
