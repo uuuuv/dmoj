@@ -333,6 +333,16 @@
 {% if iframe == '1' %}
     {% include "funix/problem/js-iframe.html" %}
 {% endif %}
+
+{% if is_dark == 1 %}
+<script class="text/javascript">
+    $(document).ready(function() {
+        const body = document.body;
+        console.log(body.classList)
+        $('body').addClass('dark-theme');
+    });
+</script>
+{% endif %}
 {% endcompress %}
 
 {% endblock %}
