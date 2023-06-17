@@ -64,7 +64,7 @@
     {% endif %}
     {% endif %}
 
-<div class="problem_container {% if is_dark == 1 %}{{ 'dark-theme' }}{% endif %}">
+<div class="problem_container {% if is_dark == 1 %}{{ 'dark-theme' }}{% endif %} {% if iframe == 1 %}'iframe'{% endif %}">
     <div class="topbar">
         <span> {% if content_title %}{{ content_title }}{% else %}{{ title }}{% endif %}</span>
     </div>
