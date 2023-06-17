@@ -152,6 +152,7 @@ def is_anonymous(self):
     return self.request.user.is_anonymous
 
 class ProblemView( ProblemMixin, TitleMixin, SingleObjectFormView):
+
     template_name = 'funix/problem/problem.html'
     form_class = ProblemSubmitForm
 
@@ -341,7 +342,6 @@ class ProblemView( ProblemMixin, TitleMixin, SingleObjectFormView):
         context['submissions_left'] = self.remaining_submission_count
         context['ACE_URL'] = settings.ACE_URL
         context['default_lang'] = self.default_language
-
         problem = context['problem']
         
         batch_order = 1
@@ -395,4 +395,100 @@ class ProblemView( ProblemMixin, TitleMixin, SingleObjectFormView):
                 pass
             else:
                 context['time_limit'] = lang_limit.time_limit
+        return context
+    
+
+# ------------------------------------------------------------------------------
+from judge.views.problem import ProblemList
+
+class ProblemListBeta(ProblemList):
+    template_name = 'funix/problem/problem-list.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(ProblemListBeta, self).get_context_data(**kwargs)
+        context['iframe'] = self.request.GET.get('iframe')
+        context['problem'] = None
+        return context
+    
+# -----------------------------------------------------------------------------------
+from judge.comments import CommentedDetailView
+from judge.models import ContestSubmission, Judge, Language, Problem, ProblemGroup, ProblemPointsVote, \
+    ProblemTranslation, ProblemType, RuntimeVersion, Solution, Submission, SubmissionSource
+from judge.utils.opengraph import generate_opengraph
+from judge.utils.pdfoid import PDF_RENDERING_ENABLED, render_pdf
+from judge.utils.tickets import own_ticket_filter
+
+class ProblemComments(ProblemMixin, SolvedProblemMixin, CommentedDetailView):
+    context_object_name = 'problem'
+    template_name = 'funix/problem/problem-comments.html'
+
+    def get_comment_page(self):
+        return 'p:%s' % self.object.code
+
+    def get_context_data(self, **kwargs):
+        context = super(ProblemComments, self).get_context_data(**kwargs)
+        user = self.request.user
+        authed = user.is_authenticated
+        context['has_submissions'] = authed and Submission.objects.filter(user=user.profile,
+                                                                          problem=self.object).exists()
+        contest_problem = (None if not authed or user.profile.current_contest is None else
+                           get_contest_problem(self.object, user.profile))
+        context['contest_problem'] = contest_problem
+        if contest_problem:
+            clarifications = self.object.clarifications
+            context['has_clarifications'] = clarifications.count() > 0
+            context['clarifications'] = clarifications.order_by('-date')
+            context['submission_limit'] = contest_problem.max_submissions
+            if contest_problem.max_submissions:
+                context['submissions_left'] = max(contest_problem.max_submissions -
+                                                  get_contest_submission_count(self.object, user.profile,
+                                                                               user.profile.current_contest.virtual), 0)
+
+        context['available_judges'] = Judge.objects.filter(online=True, problems=self.object)
+        context['show_languages'] = self.object.allowed_languages.count() != Language.objects.count()
+        context['has_pdf_render'] = PDF_RENDERING_ENABLED
+        context['completed_problem_ids'] = self.get_completed_problems()
+        context['attempted_problems'] = self.get_attempted_problems()
+
+        can_edit = self.object.is_editable_by(user)
+        context['can_edit_problem'] = can_edit
+        if user.is_authenticated:
+            tickets = self.object.tickets
+            if not can_edit:
+                tickets = tickets.filter(own_ticket_filter(user.profile.id))
+            context['has_tickets'] = tickets.exists()
+            context['num_open_tickets'] = tickets.filter(is_open=True).values('id').distinct().count()
+
+        try:
+            context['editorial'] = Solution.objects.get(problem=self.object)
+        except ObjectDoesNotExist:
+            pass
+        try:
+            translation = self.object.translations.get(language=self.request.LANGUAGE_CODE)
+        except ProblemTranslation.DoesNotExist:
+            context['title'] = self.object.name
+            context['language'] = settings.LANGUAGE_CODE
+            context['description'] = self.object.description
+            context['translated'] = False
+        else:
+            context['title'] = translation.name
+            context['language'] = self.request.LANGUAGE_CODE
+            context['description'] = translation.description
+            context['translated'] = True
+
+        if not self.object.og_image or not self.object.summary:
+            metadata = generate_opengraph('generated-meta-problem:%s:%d' % (context['language'], self.object.id),
+                                          context['description'], 'problem')
+        context['meta_description'] = self.object.summary or metadata[0]
+        context['og_image'] = self.object.og_image or metadata[1]
+
+        context['vote_perm'] = self.object.vote_permission_for_user(user)
+        if context['vote_perm'].can_vote():
+            try:
+                context['vote'] = ProblemPointsVote.objects.get(voter=user.profile, problem=self.object)
+            except ObjectDoesNotExist:
+                context['vote'] = None
+        else:
+            context['vote'] = None
+        context['iframe'] = self.request.GET.get('iframe')
         return context

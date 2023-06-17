@@ -332,7 +332,12 @@ request.user.is_authenticated and not request.profile.mute %}
   request.profile.current_contest.live -%} {{ _('Request clarification') }} {%-
   else -%} {{ _('Report an issue') }} {%- endif -%}
 </a>
-{% endif %} {% endblock %} {% block comments %} {% if contest_problem and
+{% endif %} 
+{% endblock %} 
+
+{% block comments %} 
+
+{% if contest_problem and
 contest_problem.contest.use_clarifications %}
 <div class="clarifications-area">
   <h2><i class="fa fa-question-circle"></i> {{ _('Clarifications') }}</h2>
@@ -349,5 +354,11 @@ contest_problem.contest.use_clarifications %}
   </p>
   {% endif %}
 </div>
-{% else %} {% include "comments/list.html" %} {% endif %} {% endblock %} {%
-block bodyend %} {{ super() }} {% include "comments/math.html" %} {% endblock %}
+{% else %} 
+{% include "comments/list.html" %} 
+{% endif %} 
+{% endblock %} 
+
+{% block bodyend %} 
+{{ super() }} 
+{% include "comments/math.html" %} {% endblock %}
