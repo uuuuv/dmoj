@@ -305,14 +305,16 @@
 }
 
 .rejudge_wrapper {
-  height: 0;
-  position: relative;
+  /* height: 0; */
+  width: 100px;
+  height: 100px;
+  background: red;
 }
 
 .rejudge_wrapper #rejudge_form {
-  position: absolute;
-  bottom: 8px;
-  right: 100px;
+  width: 100px;
+  height: 100px;
+  background: red;
 }
 
 #submit-button.disabled {

@@ -1,0 +1,15 @@
+<script type="text/javascript">
+  const tabHandler = (event, targetId) => {
+    var target = event.target;
+    var parent = target.parentNode;
+    console.log(parent);
+    var activeTab = parent.querySelector(".tab.active");
+    activeTab.classList.remove("active");
+    target.classList.add("active");
+
+    var targetEle = $(`#${targetId}`);
+    console.log(targetEle);
+    targetEle.siblings().removeClass("active");
+    targetEle.addClass("active");
+  };
+</script>

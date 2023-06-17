@@ -87,11 +87,6 @@ class SolvedProblemMixin(object):
 
 user_logger = logging.getLogger('judge.user')
 
-# ************************************************
-# ************************************************
-# ******************* CUSTOM *********************
-# ************************************************
-# ************************************************
 from judge import event_poster as event
 from operator import attrgetter
 from collections import namedtuple
@@ -152,14 +147,12 @@ def combine_statuses(status_cases, submission):
             ret.extend(group)
     return ret
 
-# uuuuvcomment my odd function
+# uuuuvcomment 
 def is_anonymous(self):
     return self.request.user.is_anonymous
-# uuuuvcomment I removed LoginRequiredMixin from this class.
-# User who doesn't have permission only see problem, otherwise can see submission in additional
-# class FunixProblemSubmit(LoginRequiredMixin, ProblemMixin, TitleMixin, SingleObjectFormView):
-class FunixProblemSubmit( ProblemMixin, TitleMixin, SingleObjectFormView):
-    template_name = 'problem/problem-and-submission.html'
+
+class ProblemView( ProblemMixin, TitleMixin, SingleObjectFormView):
+    template_name = 'funix/problem/problem.html'
     form_class = ProblemSubmitForm
 
     @cached_property
@@ -246,11 +239,10 @@ class FunixProblemSubmit( ProblemMixin, TitleMixin, SingleObjectFormView):
         return form
 
     def get_success_url(self):
-        return reverse('problem_submit', kwargs=({
+        return reverse('beta_problem', kwargs=({
             "problem": self.new_submission.problem.code,
-            "submission": self.new_submission.id
-        }))
-        # return reverse('problem_submit', args=(self.new_submission.problem.code,))
+            "submission": self.new_submission.id,
+        })) + "?iframe={}".format(self.request.GET.get('iframe'))
 
     def form_valid(self, form):
         if (is_anonymous(self)):
@@ -351,12 +343,11 @@ class FunixProblemSubmit( ProblemMixin, TitleMixin, SingleObjectFormView):
         context['default_lang'] = self.default_language
 
         problem = context['problem']
-
+        
         batch_order = 1
         sub_order = 1
         in_batch = 0
         testcases_map = []
-        haiz = []
         for case in problem.cases.all(): 
             item = {"order": case.order, "type": case.type}
             item['is_pretest'] = case.is_pretest
@@ -384,9 +375,8 @@ class FunixProblemSubmit( ProblemMixin, TitleMixin, SingleObjectFormView):
                 testcases_map.append(item)
 
         context['testcases_map'] = testcases_map
-        context['haiz'] = haiz
 
-        
+        context['iframe'] = self.request.GET.get('iframe')
         submission = self.old_submission
         context['old_submission'] = self.initial
 
