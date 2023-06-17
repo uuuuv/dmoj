@@ -48,32 +48,9 @@
 {% endif %}
 {% endif %}
 
-<<<<<<< HEAD
-    {% if perms.judge.test_site %}
-    {% if PREFERRED_STYLE_CSS is not none %}
-    {% if PREFERRED_STYLE_CSS == 'dark/style.css' %}
-        {% set is_dark = 1 %}
-    {% endif %}
-    {% endif %}
-    {% endif %}
-
-<div class="problem_container {% if is_dark == 1 %}{{ 'dark-theme' }}{% endif %} {% if iframe == '1' %}{{'iframe'}}{% endif %}">
-    <div class="topbar">
-        <span> {% if content_title %}{{ content_title }}{% else %}{{ title }}{% endif %}</span>
-    </div>
-
-    <div class="sidebar">
-        {% include "funix/problem/sidebar.html" %}
-    </div>
-
-    <div class="main">
-        <div class="problem_details">
-            {% include "funix/problem/problem-details.html" %}
-=======
     <div class="problem_container">
         <div class="topbar">
             <span> {% if content_title %}{{ content_title }}{% else %}{{ title }}{% endif %}</span>
->>>>>>> submissions
         </div>
 
         <div class="main">
@@ -173,24 +150,10 @@
                             {% if no_judges %}
                                 <span style="color: red">{{ _('No judge is available for this problem.') }}</span>
                             {% else %}
-<<<<<<< HEAD
-                                {% set iframe_query = '' %}
-                            {% endif %}
-                            <form id="rejudge_form" action="{{ url('beta_submission_rejudge') }}{{iframe_query}}" method="post">
-                                {% csrf_token %}
-                                <a href="#" onclick="confirm_and_rejudge(parentNode)" class="button">{{ _('Rejudge') }}</a>
-                                <input type="hidden" name="id" value="{{ submission.id }}" />
-                                <input type="hidden" name="path" value="{{ url('beta_problem', problem.code) }}{% if iframe %}'?iframe='{{iframe}}{% endif %}" />
-                            </form>
-                        {% endif %}
-                        </div>
-                    </ul>
-=======
                                 <div class="submit-bar">
                                     <div>
                                         {{ form.judge }}
                                     </div>
->>>>>>> submissions
 
                                     <div class="submitbar_buttons">
                                         <input id="submit-button"  type="submit" value="{% if submission %}{{ _('Resubmit!') }}{% else %}{{ _('Submit') }}{% endif %}" class="button accent"
@@ -199,44 +162,10 @@
                                 </div>
                             {% endif %}
                         </div>
-<<<<<<< HEAD
- 
-                        <div id="submission_results" class="tab_content {% if is_processing == true %}{{'active'}}{% endif %}">
-                            {% if submission and  not submission.is_graded and (request.user == submission.user.user or perms.judge.abort_any_submission) %}
-                                <div id="abort-button" class="d-none" >
-                                    {# uuuuvcomment ------------------------- abort form ------------------------- #}
-                                    <form action="{{ url('beta_submission_abort', submission.id) }}{% if not iframe is none %}?iframe={{iframe}}{% endif %}" method="post"
-                                        title="{{ _('Press Ctrl-Enter or Command-Enter to abort.') }}">
-                                        {% csrf_token %}
-                                        <input style="float:left" type="submit" value="{{ _('Abort') }}" class="button"/>
-                                    </form>
-                                </div>
-                            {% endif %}
-    
-                            {% if submission %}
-                                <span class="submission-info">
-                                    <span class="submission-date">
-                                        {# uuuuvcomment ------------------------- submission info ------------------------- #}
-                                        {% with date=submission.date|date(_('N j, Y, g:i a')), can_edit=submission.problem.is_editable_by(request.user) %}
-                                            {% if can_edit and submission.judged_on %}
-                                                {{ _('%(date)s on %(judge)s', date=date, judge=submission.judged_on.name) }}
-                                            {% else %}
-                                                {{ date }}
-                                            {% endif %}
-                                            <br>
-                                            <span>{{ submission.language }}</span>
-                                            {% if can_edit %}
-                                                [<a href="{{ url('admin:judge_submission_change', submission.id) }}">{{ _('Admin') }}</a>]
-                                            {% endif %}
-                                        {% endwith %}
-                                    </span>
-                                </span>
-=======
                     </form>
             
                     <div class="submission">
                         {# uuuuvcomment ------------------------- test cases ------------------------- #}
->>>>>>> submissions
 
                         <ul class="tabs">
                     
