@@ -118,6 +118,12 @@
   border: 0.5px solid var(--border);
 }
 
+/* chosen language  */
+#language-select2 .select2-results__option[aria-selected=true] {
+  color: var(--text-color-main-standout) !important;
+}
+
+
 /* selected language placeholder  */
 .select2-container--dmoj
   .select2-selection--single
@@ -163,6 +169,7 @@
   width: 100%;
   height: calc(100% - var(--topbar-height));
   display: flex;
+  background: var(--bg-main);
 }
 
 .problem_details {
@@ -242,7 +249,6 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  min-width: 300px;
   min-height: 200px;
   background: var(--bg-main);
   padding-bottom: 20px;
@@ -481,7 +487,6 @@
 
 #testcases .tab_content {
   width: 100%;
-  height: 100%;
   overflow: auto;
   padding: 0 8px;
   margin: 0;
@@ -505,9 +510,9 @@
   background: #e9e9e9;
   border: 0.5px solid var(--border);
   max-height: 200px;
+  flex-shrink: 0;
+  max-width: 500px;
   overflow: auto;
-  flex: 1;
-  width: calc(100% - 300px);
 }
 
 .testcase_data_item .inner_wrapper {
@@ -532,6 +537,10 @@
 .testcase_data_item > span {
   display: flex;
   align-items: center;
+}
+
+.testcase_data_item .odd-holder {
+  flex-shrink: 0;
 }
 
 /* abort button  */

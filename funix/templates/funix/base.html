@@ -1,7 +1,20 @@
 <!DOCTYPE html >
-<html lang="{{ LANGUAGE_CODE }}" class="{% if iframe %}{% if iframe == '1' %}{{'iframe'}}{% endif %}{% endif %}{% if is_dark == 1 %}{{'dark_theme'}}{% endif %}">
+{% if perms.judge.test_site %} 
+    {% if PREFERRED_STYLE_CSS is not none %} 
+        {% if PREFERRED_STYLE_CSS == 'dark/style.css' %} 
+            {% set is_dark = 1 %} 
+        {% else %}
+            {% set is_dark = 0 %} 
+        {% endif %} 
+    {% else %} 
+        {% set is_dark = 1 %} 
+    {% endif %}
+{% else %}
+    {% set is_dark = 0 %} 
+{% endif %} 
+<html lang="{{ LANGUAGE_CODE }}" class="{% if iframe %}{% if iframe == '1' %}{{'iframe'}}{% endif %}{% endif %} {% if is_dark == 1 %}{{'dark-theme'}}{% endif %}">
 <head>
-    <title>{% block title %}{{ title }} - {{ SITE_LONG_NAME }}{% endblock %}</title>
+    <title>222{% block title %}{{ title }} - {{ SITE_LONG_NAME }}{% endblock %}</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     {% if misc_config.meta_keywords %}
         <meta name="keywords" content="{{ misc_config.meta_keywords }}">
@@ -49,8 +62,8 @@
             {% if PREFERRED_STYLE_CSS is not none %}
                 <link rel="stylesheet" href="{{ static(PREFERRED_STYLE_CSS) }}">
             {% else %}
-                <link rel="stylesheet" href="{{ static(LIGHT_STYLE_CSS) }}" media="(prefers-color-scheme: light)">
-                <link rel="stylesheet" href="{{ static(DARK_STYLE_CSS) }}" media="(prefers-color-scheme: dark)">
+            <link rel="stylesheet" href="{{ static(LIGHT_STYLE_CSS) }}" media="(prefers-color-scheme: light)">
+            <link rel="stylesheet" href="{{ static(DARK_STYLE_CSS) }}" media="(prefers-color-scheme: dark)">
             {% endif %}
         {% else %}
             <link rel="stylesheet" href="{{ static(LIGHT_STYLE_CSS) }}">
@@ -180,13 +193,7 @@
     </noscript>
 </head>
 
-{% if perms.judge.test_site %} 
-{% if PREFERRED_STYLE_CSS is not none %} 
-{% if PREFERRED_STYLE_CSS == 'dark/style.css' %} 
-  {% set is_dark = 1 %} 
-{% endif %} 
-{% endif %} 
-{% endif %} 
+
 <body >
 <svg width="0" height="0" style="display: block">
     <defs>

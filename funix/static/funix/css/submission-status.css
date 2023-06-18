@@ -5,6 +5,18 @@
   overflow: auto;
   color: var(--text-color-main);
   background: var(--bg-main);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+
+#submission_results  {
+  white-space: nowrap;
+}
+
+#submission_results .submission-info {
+  display: block;
+  width: 100%;
 }
 
 .testcases_container * {
@@ -106,7 +118,13 @@
 }
 
 .your_output pre {
-  background: #e6e6e6;
-  border: 0.5px solid #ccc;
+  background: var(--bg-main);
+  border: 0.5px solid var(--border);
   padding: 6px;
+  color: var(--text-color-main);
+}
+
+#submission_results  h3 {
+  font-size: 1em;
+  font-weight: bold;
 }
