@@ -1,6 +1,9 @@
 {% if problem %}
 <a 
-class="{% if request.path == url('beta_problem', problem.code) %}{{'active'}}{% endif %}" 
+class="
+{% if request.path == url('beta_problem', problem.code) %}{{'active'}}{% endif %}
+{% if submission %}{% if request.path == url('beta_problem', problem.code, submission.id) %}{{'active'}}{% endif %}{% endif %}
+" 
 href="{{ url('beta_problem', problem.code) }}?iframe=1">
   <svg
     xmlns="http://www.w3.org/2000/svg"

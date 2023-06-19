@@ -29,24 +29,25 @@
 
           if ($(window).scrollTop() + $(window).height() > $(document).height() - 100)
               $("html, body").animate({scrollTop: $(document).height()}, 0);
+            
       }
 
       var receiver = new EventReceiver(
           "{{ EVENT_DAEMON_LOCATION }}", "{{ EVENT_DAEMON_POLL_LOCATION }}",
           ['sub_{{ submission.id_secret }}'], {{ last_msg }}, function (message) {
-              switch (message.type) {
-                  case 'internal-error':
-                  case 'grading-end':
-                  case 'compile-error':
-                      $('#abort-button').remove();
-                      $('#grading-label').remove();
-                      $('#submit-button').removeClass('disabled');
-                  case 'test-case':
-                  case 'grading-begin':
-                  case 'processing':
-                      update();
-                      $('#submit-button').removeClass('disabled');
-              }
+                switch (message.type) {
+                    case 'internal-error':
+                    case 'grading-end':
+                    case 'compile-error':
+                        $('#abort-button').remove();
+                        $('#grading-label').remove();
+                        $('#submit-button').removeClass('disabled');
+                    case 'test-case':
+                    case 'grading-begin':
+                    case 'processing':
+                        update();
+                        $('#submit-button').removeClass('disabled');
+                }
           }
       )
   });
