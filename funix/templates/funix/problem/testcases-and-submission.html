@@ -182,14 +182,11 @@
                                 {% if case.type != 'S' %}
                                     <div class="testcase_data_item">
                                         <label>Result:</label>
-                                        {% if case.data %}
-                                            {% if case_submission %}
-                                                <span
-                                                class=" 
-                                                    {% if case_submission.status == 'AC' %}{{'success'}}{% elif case_submission.status == 'WA' %}{{'danger'}}{% else %}{{'warning'}}{% endif %}"
-                                                >{{case_submission.status}}</span>
-                                            {% endif %}
-                                            <div class="odd-holder" style="width: 20px"></div>
+                                        {% if case_submission %}
+                                            <span
+                                            class=" 
+                                                {% if case_submission.status == 'AC' %}{{'success'}}{% elif case_submission.status == 'WA' %}{{'danger'}}{% else %}{{'warning'}}{% endif %}"
+                                            >{{case_submission.status}}</span>
                                         {% else %}
                                             <span>_</span>
                                         {% endif %}

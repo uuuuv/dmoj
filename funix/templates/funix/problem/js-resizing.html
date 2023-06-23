@@ -3,11 +3,6 @@
   function expandEditor(event) {
     var codeplace = $(".codeplace");
     codeplace.toggleClass("expand");
-    if (codeplace.hasClass("expand")) {
-      event.target.innerHTML = collapse;
-    } else {
-      event.target.innerHTML = expand;
-    }
   }
 
   // render resizer buttons
