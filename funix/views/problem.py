@@ -19,8 +19,8 @@ from judge.utils.problems import contest_attempted_ids, contest_completed_ids,  
     user_completed_ids
 from judge.utils.views import SingleObjectFormView, TitleMixin, generic_message
 
-recjk = re.compile(r'[\u2E80-\u2E99\u2E9B-\u2EF3\u2F00-\u2FD5\u3005\u3007\u3021-\u3029\u3038-\u303A\u303B\u3400-\u4DB5'
-                   r'\u4E00-\u9FC3\uF900-\uFA2D\uFA30-\uFA6A\uFA70-\uFAD9\U00020000-\U0002A6D6\U0002F800-\U0002FA1D]')
+# recjk = re.compile(r'[\u2E80-\u2E99\u2E9B-\u2EF3\u2F00-\u2FD5\u3005\u3007\u3021-\u3029\u3038-\u303A\u303B\u3400-\u4DB5'
+#                    r'\u4E00-\u9FC3\uF900-\uFA2D\uFA30-\uFA6A\uFA70-\uFAD9\U00020000-\U0002A6D6\U0002F800-\U0002FA1D]')
 
 
 def get_contest_problem(problem, profile):
@@ -153,7 +153,7 @@ def is_anonymous(self):
 
 
 from funix.utils.problem import map_test_cases
-class ProblemView( ProblemMixin, TitleMixin, SingleObjectFormView):
+class ProblemBeta( ProblemMixin, TitleMixin, SingleObjectFormView):
 
     template_name = 'funix/problem/problem.html'
     form_class = ProblemSubmitForm
@@ -390,7 +390,7 @@ from judge.utils.opengraph import generate_opengraph
 from judge.utils.pdfoid import PDF_RENDERING_ENABLED, render_pdf
 from judge.utils.tickets import own_ticket_filter
 
-class ProblemComments(ProblemMixin, SolvedProblemMixin, CommentedDetailView):
+class ProblemCommentsBeta(ProblemMixin, SolvedProblemMixin, CommentedDetailView):
     context_object_name = 'problem'
     template_name = 'funix/problem/problem-comments.html'
 

@@ -107,7 +107,6 @@ request.in_contest and submission_limit %} {% if submissions_left > 0 %}
   pluralize %} {{ counter }} submissions left {% endtrans %}
 </div>
 {% else %}
-<a class="unselectable button full disabled">{{ _('Submit solution') }}</a>
 {# uuuuvcomment #}
 <a class="unselectable button full disabled">{{ _('Submit solution beta') }}</a>
 {# uuuuvcomment #}
@@ -115,20 +114,14 @@ request.in_contest and submission_limit %} {% if submissions_left > 0 %}
   {{ _('0 submissions left') }}
 </div>
 {% endif %} {% else %}
-<a
-  href="{{ url('problem_submit', problem.code) }}"
-  class="unselectable button full"
->
-  {{ _('Submit solution') }}
-</a>
-<br />
 {# uuuuvcomment #}
 <a
-  href="{{ url('beta_problem', problem.code) }}"
-  class="unselectable button full"
+href="{{ url('beta_problem', problem.code) }}"
+class="unselectable button full"
 >
-  {{ _('Submit solution beta') }}
+{{ _('Submit solution beta') }}
 </a>
+<br />
 {# uuuuvcomment #} {% endif %}
 
 <hr style="padding-bottom: 0.3em" />

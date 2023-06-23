@@ -455,7 +455,7 @@
 }
 
 #testcases .tabs {
-  width: 150px;
+  width: 180px;
   flex-shrink: 0;
   height: 100%;
   overflow: auto;
@@ -473,6 +473,10 @@
   cursor: pointer;
   width: 100%;
   height: 40px;
+}
+
+#testcases .tabs .tab span {
+  white-space: nowrap;
 }
 
 #testcases .tabs .tab.subcase {
