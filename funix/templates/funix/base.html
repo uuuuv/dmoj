@@ -14,7 +14,7 @@
 {% endif %} 
 <html lang="{{ LANGUAGE_CODE }}" class="{% if iframe %}{% if iframe == '1' %}{{'iframe'}}{% endif %}{% endif %} {% if is_dark == 1 %}{{'dark-theme'}}{% endif %}">
 <head>
-    <title>222{% block title %}{{ title }} - {{ SITE_LONG_NAME }}{% endblock %}</title>
+    <title>{% block title %}{{ title }} - {{ SITE_LONG_NAME }}{% endblock %}</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     {% if misc_config.meta_keywords %}
         <meta name="keywords" content="{{ misc_config.meta_keywords }}">

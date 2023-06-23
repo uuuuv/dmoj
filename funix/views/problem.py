@@ -19,10 +19,6 @@ from judge.utils.problems import contest_attempted_ids, contest_completed_ids,  
     user_completed_ids
 from judge.utils.views import SingleObjectFormView, TitleMixin, generic_message
 
-# recjk = re.compile(r'[\u2E80-\u2E99\u2E9B-\u2EF3\u2F00-\u2FD5\u3005\u3007\u3021-\u3029\u3038-\u303A\u303B\u3400-\u4DB5'
-#                    r'\u4E00-\u9FC3\uF900-\uFA2D\uFA30-\uFA6A\uFA70-\uFAD9\U00020000-\U0002A6D6\U0002F800-\U0002FA1D]')
-
-
 def get_contest_problem(problem, profile):
     try:
         return problem.contests.get(contest_id=profile.current_contest.contest_id)
