@@ -159,7 +159,7 @@
                                 {% if case.type != 'S' %}
                                     <div class="testcase_data_item">
                                         <label>Result:</label>
-                                        {% if case.data and case.is_pretest == true %}
+                                        {% if case.data %}
                                             {% if case_submission %}
                                                 <span
                                                 class=" 
@@ -177,11 +177,8 @@
                                 {% if case.type != 'S' %}
                                     <div class="testcase_data_item">
                                         <label>Memory:</label>
-                                        {% if case.data and case.is_pretest == true %}
-                                            {% if case_submission %}
-                                                <span>{{case_submission.memory|kbdetailformat}}</span>
-                                            {% endif %}
-                                            <div class="odd-holder" style="width: 20px"></div>
+                                        {% if case_submission %}
+                                            <span>{{case_submission.memory|kbdetailformat}}</span>
                                         {% else %}
                                             <span>_</span>
                                         {% endif %}
@@ -192,11 +189,8 @@
                                 {% if case.type != 'S' %}
                                     <div class="testcase_data_item">
                                         <label>Time:</label>
-                                        {% if case.data and case.is_pretest == true %}
-                                            {% if case_submission %}
-                                                <span>{{case_submission.time|floatformat(3)}}s</span>
-                                            {% endif %}
-                                            <div class="odd-holder" style="width: 20px"></div>
+                                        {% if case_submission %}
+                                            <span>{{case_submission.time|floatformat(3)}}s</span>
                                         {% else %}
                                             <span>_</span>
                                         {% endif %}
@@ -204,33 +198,6 @@
                                     </div>
                                 {% endif %}
 
-                                {% if case.type != 'S' %}
-                                    <div class="testcase_data_item">
-                                        <label>Feedback:</label>
-                                        {% if case.data and case.is_pretest == true %}
-                                            {% if case_submission %}
-                                                <span>{{ case_submission.feedback }}s</span>
-                                            {% else %}
-                                                <span>_</span>
-                                            {% endif %}
-                                        {% endif %}
-                                        <div class="odd-holder" style="width: 20px"></div>
-                                    </div>
-                                {% endif %}
-
-                                {% if case.type != 'S' %}
-                                    <div class="testcase_data_item">
-                                        <label>Extend feedback:</label>
-                                        {% if case.data and case.is_pretest == true %}
-                                            {% if case_submission %}
-                                                <span>{{ case_submission.extended_feedback }}s</span>
-                                            {% else %}
-                                                <span>_</span>
-                                            {% endif %}
-                                        {% endif %}
-                                        <div class="odd-holder" style="width: 20px"></div>
-                                    </div>
-                                {% endif %}
                             </div>
                         </div>
                     {% endif %}

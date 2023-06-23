@@ -5,9 +5,9 @@
   overflow: auto;
   color: var(--text-color-main);
   background: var(--bg-main);
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-start;
+  /* display: flex; */
+  /* align-items: flex-start; */
+  /* flex-wrap: wrap; */
 }
 
 #submission_results  {

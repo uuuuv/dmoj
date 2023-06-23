@@ -17,6 +17,10 @@
   --text-color-main-hover: #202020;
   --text-color-active: #0070f3;
 
+  --color-success: green;
+  --color-warning: orange;
+  --color-danger: red;
+
   --button-border: #e0e0e0;
   --button-border-hover: #919191;
   --button-color: #646464;
@@ -58,6 +62,18 @@
   --scrollbar-thumb-hover: #9b9b9b;
   --scrollbar-track: #414141;
   --scrollbar-track-hover: #414141;
+}
+
+.success {
+  color: var(--color-success);
+}
+
+.danger {
+  color: var(--color-danger);
+}
+
+.warning {
+  color: var(--color-warning);
 }
 
 /* override  */
