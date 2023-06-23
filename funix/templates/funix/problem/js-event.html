@@ -2,7 +2,6 @@
   $(function () {
       var blocked = false, request = false;
       var list = $('#test-cases');
-      $('#submit-button').addClass('disabled');
 
       function update() {
           if (blocked) {
@@ -12,9 +11,12 @@
           request = false;
           blocked = true;
           $.ajax({
-              url: '{{ url('submission_testcases_query') }}',
+              url: '{{ url('beta_submission_testcases_query') }}',
               data: {id: '{{ submission.id }}'}
           }).done(function (data) {
+                const update_zone = document.getElementById('event-update')
+                update_zone.innerHTML = data;
+                
               list.empty().html(data).find('.toggle').each(function () {
                   register_toggle($(this));
               });
@@ -29,25 +31,22 @@
 
           if ($(window).scrollTop() + $(window).height() > $(document).height() - 100)
               $("html, body").animate({scrollTop: $(document).height()}, 0);
-            
       }
 
       var receiver = new EventReceiver(
           "{{ EVENT_DAEMON_LOCATION }}", "{{ EVENT_DAEMON_POLL_LOCATION }}",
           ['sub_{{ submission.id_secret }}'], {{ last_msg }}, function (message) {
-                switch (message.type) {
-                    case 'internal-error':
-                    case 'grading-end':
-                    case 'compile-error':
-                        $('#abort-button').remove();
-                        $('#grading-label').remove();
-                        $('#submit-button').removeClass('disabled');
-                    case 'test-case':
-                    case 'grading-begin':
-                    case 'processing':
-                        update();
-                        $('#submit-button').removeClass('disabled');
-                }
+              switch (message.type) {
+                  case 'internal-error':
+                  case 'grading-end':
+                  case 'compile-error':
+                      $('#abort-button').remove();
+                      $('#grading-label').remove();
+                  case 'test-case':
+                  case 'grading-begin':
+                  case 'processing':
+                      update();
+              }
           }
       )
   });

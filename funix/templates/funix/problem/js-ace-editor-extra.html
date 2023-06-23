@@ -1,7 +1,21 @@
 <script type="text/javascript">
+
+  const initialResizableHeight = localStorage.getItem('editor_height');
+  if (initialResizableHeight && !isNaN(Number(initialResizableHeight))) {
+    $(".codeplace_editor").height(Number(initialResizableHeight))
+  }
+
+  const initialResizableWidth = localStorage.getItem('editor_width');
+  if (initialResizableWidth && !isNaN(Number(initialResizableWidth))) {
+    $(".codeplace").width(Number(initialResizableWidth))
+  }
+
   // horizontal resizing
   $(".codeplace").resizable({
     direction: ["left"],
+    stop: () => {
+      localStorage.setItem('editor_width', $(".codeplace").width()) 
+    }
   });
 
   // update #ace_source height when and after vertical resizing
@@ -13,8 +27,11 @@
     stop: () => {
       $("#ace_source").height($(".codeplace_editor").height());
       window.aceEditor.resize();
+      localStorage.setItem('editor_height', $(".codeplace_editor").height())  
     },
   });
+
+
 
   // set initial height to #ace_source
   $("#ace_source").height($(".codeplace_editor").height());

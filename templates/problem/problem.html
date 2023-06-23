@@ -108,7 +108,9 @@ request.in_contest and submission_limit %} {% if submissions_left > 0 %}
 </div>
 {% else %}
 <a class="unselectable button full disabled">{{ _('Submit solution') }}</a>
+{# uuuuvcomment #}
 <a class="unselectable button full disabled">{{ _('Submit solution beta') }}</a>
+{# uuuuvcomment #}
 <div class="no-submissions-left submissions-left">
   {{ _('0 submissions left') }}
 </div>
@@ -120,13 +122,14 @@ request.in_contest and submission_limit %} {% if submissions_left > 0 %}
   {{ _('Submit solution') }}
 </a>
 <br />
+{# uuuuvcomment #}
 <a
   href="{{ url('beta_problem', problem.code) }}"
   class="unselectable button full"
 >
   {{ _('Submit solution beta') }}
 </a>
-{% endif %}
+{# uuuuvcomment #} {% endif %}
 
 <hr style="padding-bottom: 0.3em" />
 
@@ -189,7 +192,13 @@ not request.in_contest %}
     >{{ _('Edit problem') }}</a
   >
 </div>
-{% if not problem.is_manually_managed %}
+{# uuuuvcomment #}
+<div>
+  <a href="{{ url('beta_update_problem_data', problem.code) }}"
+    >{{ _('Update test data (beta)') }}</a
+  >
+</div>
+{# uuuuvcomment #} {% if not problem.is_manually_managed %}
 <div>
   <a href="{{ url('problem_data', problem.code) }}"
     >{{ _('Edit test data') }}</a
@@ -332,12 +341,7 @@ request.user.is_authenticated and not request.profile.mute %}
   request.profile.current_contest.live -%} {{ _('Request clarification') }} {%-
   else -%} {{ _('Report an issue') }} {%- endif -%}
 </a>
-{% endif %} 
-{% endblock %} 
-
-{% block comments %} 
-
-{% if contest_problem and
+{% endif %} {% endblock %} {% block comments %} {% if contest_problem and
 contest_problem.contest.use_clarifications %}
 <div class="clarifications-area">
   <h2><i class="fa fa-question-circle"></i> {{ _('Clarifications') }}</h2>
@@ -354,11 +358,5 @@ contest_problem.contest.use_clarifications %}
   </p>
   {% endif %}
 </div>
-{% else %} 
-{% include "comments/list.html" %} 
-{% endif %} 
-{% endblock %} 
-
-{% block bodyend %} 
-{{ super() }} 
-{% include "comments/math.html" %} {% endblock %}
+{% else %} {% include "comments/list.html" %} {% endif %} {% endblock %} {%
+block bodyend %} {{ super() }} {% include "comments/math.html" %} {% endblock %}

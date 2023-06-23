@@ -151,6 +151,8 @@ def combine_statuses(status_cases, submission):
 def is_anonymous(self):
     return self.request.user.is_anonymous
 
+
+from funix.utils.problem import map_test_cases
 class ProblemView( ProblemMixin, TitleMixin, SingleObjectFormView):
 
     template_name = 'funix/problem/problem.html'
@@ -344,37 +346,7 @@ class ProblemView( ProblemMixin, TitleMixin, SingleObjectFormView):
         context['default_lang'] = self.default_language
         problem = context['problem']
         
-        batch_order = 1
-        sub_order = 1
-        in_batch = 0
-        testcases_map = []
-        for case in problem.cases.all(): 
-            item = {"order": case.order, "type": case.type}
-            item['is_pretest'] = case.is_pretest
-            item['batch_order'] = batch_order
-            haiz_item = {}
-            haiz_item['batch_order'] = batch_order
-
-            if case.type == 'S':
-                in_batch = 1
-
-            elif case.type == 'C' and in_batch == 1:
-                item['sub_order'] = sub_order
-                sub_order += 1
-
-            elif case.type == 'C' and in_batch == 0:
-                item['batch_order'] = batch_order
-                batch_order = batch_order + 1
-
-            else:
-                in_batch = 0
-                batch_order = batch_order + 1
-                sub_order = 1
-            
-            if case.type != 'E':
-                testcases_map.append(item)
-
-        context['testcases_map'] = testcases_map
+        context['testcases_map'] = map_test_cases(problem.cases.all())
 
         context['iframe'] = self.request.GET.get('iframe')
         submission = self.old_submission
@@ -492,3 +464,5 @@ class ProblemComments(ProblemMixin, SolvedProblemMixin, CommentedDetailView):
             context['vote'] = None
         context['iframe'] = self.request.GET.get('iframe')
         return context
+
+# -------------------- update problem data ----------------------------
