@@ -48,7 +48,7 @@
 
         <div class="main">
             <div class="problem_details">
-                {% include "funix/problem/problem-details.html" %}
+                 {% include "funix/problem/problem-details.html" %} 
             </div>
 
 
@@ -172,4 +172,66 @@
         {% include "funix/problem/js-resizing.html" %}
         {% include "funix/problem/js-tabs.html" %}
     {% endcompress %}
+
+    <script type="text/javascript">
+        function sidebarNavigate(event, tab) {
+            console.log(tab);
+            if (tab == 'problem-details') {
+                $.ajax({
+                    url: '{{ url('beta_problem_details') }}',
+                    data: {code: '{{ problem.code }}'}
+                }).done(function (data) {
+                    console.log("Details")
+                    console.log(data)
+                    document.querySelector('.problem_details').innerHTML = data
+                      
+                }).fail(function (data) {
+                    console.log('Failed to update testcases!');
+                });
+            }
+
+            if (tab == 'problem-comments') {
+                $.ajax({
+                    url: '{{ url('beta_problem_comments', problem.code) }}',
+                    data: {code: '{{ problem.code }}'}
+                }).done(function (data) {
+                    console.log("Comments")
+                    console.log(data)
+                    document.querySelector('.problem_details').innerHTML = data
+                      
+                }).fail(function (data) {
+                    console.log('Failed to update testcases!');
+                });
+            }
+        }
+    </script>
+
+
+    <script type="text/javascript">
+        $.ajax({
+            type:'POST',
+            url:'{% url "create" %}',
+            data:{
+                title:$('#title').val(),
+                description:$('#description').val(),
+                csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
+                action: 'post'
+            },
+            success:function(json){
+                document.getElementById("post-form").reset();
+                $(".posts").prepend('<div class="col-md-6">'+
+                    '<div class="row no-gutters border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">' +
+                        '<div class="col p-4 d-flex flex-column position-static">' +
+                            '<h3 class="mb-0">' + json.title + '</h3>' +
+                            '<p class="mb-auto">' + json.description + '</p>' +
+                        '</div>' +
+                    '</div>' +
+                '</div>' 
+                )
+            },
+            error : function(xhr,errmsg,err) {
+            console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+        }
+        });
+    </script>
 {% endblock %}

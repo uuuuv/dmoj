@@ -1,10 +1,9 @@
 {% if problem %}
-<span 
+<a 
 class="
 {% if request.path == url('beta_problem', problem.code) %}{{'active'}}{% endif %}
 {% if submission %}{% if request.path == url('beta_problem', problem.code, submission.id) %}{{'active'}}{% endif %}{% endif %}
 " 
-onclick="sidebarNavigate(event, 'problem-details')"
 href="{{ url('beta_problem', problem.code) }}?iframe=1">
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -20,7 +19,7 @@ href="{{ url('beta_problem', problem.code) }}?iframe=1">
       d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"
     />
   </svg>
-</span>
+</a>
 {% endif %}
 
 <a 
@@ -45,8 +44,7 @@ class="{% if request.path == url('beta_problem_list') %}{{'active'}}{% endif %}"
 </a>
 
 {% if problem %}
-<span 
-onclick="sidebarNavigate(event, 'problem-comments')"
+<a 
 href="{{ url('beta_problem_comments', problem.code) }}?iframe=1"
 class="{% if request.path == url('beta_problem_comments', problem.code)%}{{'active'}}{% endif %}"
 >
@@ -64,7 +62,7 @@ class="{% if request.path == url('beta_problem_comments', problem.code)%}{{'acti
       d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 01.865-.501 48.172 48.172 0 003.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z"
     />
   </svg>
-</span>
+</a>
 {% endif %}
 
 {% if problem %}

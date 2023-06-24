@@ -1,4 +1,6 @@
+{% extends "funix/problem/problem-base.html" %} 
 
+{% block media_child %}
     <link rel="stylesheet" href="{{ static('funix/css/problem-comments.css') }}">
     {% include "comments/media-css.html" %}
     <style>
@@ -44,13 +46,17 @@
         padding-top: 0.5em;
     }
     </style>
+{% endblock %}
  
+{% block content_js_media %} 
     {% include "comments/media-js.html"%} 
     {% if vote_perm.can_view() %}
         <script src="{{ static('libs/chart.js/Chart.js') }}" type="text/javascript"></script>
         <script src="{{ static('problem-vote.js') }}" type="text/javascript"></script>
     {% endif %} 
+{% endblock %} 
 
+{% block problem_content %}
     <div class="main">
         <div class="main-inner">
             {% block title_row %}
@@ -89,9 +95,13 @@
                     {% endif %}
                 </div>
             {% else %} 
-                {% include "funix/comments/list.html" %} 
+                {% include "comments/list.html" %} 
             {% endif %} 
 
-            {% include "comments/math.html" %} 
+            {% block bodyend %} 
+                {{ super() }} 
+                {% include "comments/math.html" %} 
+            {% endblock %}
         </div>
     </div>
+{% endblock %}

@@ -1,0 +1,20 @@
+<div class="codeplace">
+    {% if not request.user.is_authenticated %}
+        <div class="login_required_overlay">
+            <div>
+                <p>Login is needed to make submission</p>
+                <a href="{{ url('auth_login') }}?next={{ LOGIN_RETURN_PATH|urlencode }}">{{ _('Login!') }}</a>
+            </div>
+        </div>
+    {% else %}
+        <div class="toolbar">
+            {% include "funix/submission/toolbar.html" %}
+        </div>
+
+        {% include "funix/submission/editor.html" %}
+
+        <div id="event-update" class="submission">
+            {% include 'funix/submission/submission.html' %}
+        </div>
+    {% endif %}
+</div>
