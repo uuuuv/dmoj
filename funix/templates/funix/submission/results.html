@@ -1,3 +1,6 @@
+<script type="text/javascript" src="{{ static('event.js') }}"></script>
+
+
 {% if submission and  not submission.is_graded and (request.user == submission.user.user or perms.judge.abort_any_submission) %}
 <div id="abort-button" class="d-none" >
     {# uuuuvcomment ------------------------- abort form ------------------------- #}
@@ -29,8 +32,17 @@
     </span>
 
     {# uuuuvcomment ------------------------- submission results and loading ------------------------- #}
-    <div id="test-cases">{% include "funix/problem/submission-status.html" %}</div>
+    <div id="test-cases">
+
+        <br />
+        <hr class="half-hr" />
+        <br />
+
+        {% include "submission/status-testcases.html" %}
+    </div>
 
 {% else %}
     <p>You haven't made any submission.</p>
 {% endif %}
+
+

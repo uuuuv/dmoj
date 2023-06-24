@@ -1,0 +1,24 @@
+<div class="rejudge_wrapper">
+    {% if submission and perms.judge.rejudge_submission and not submission.is_locked %}
+    {% compress js %}
+        <script type="text/javascript">
+            window.confirm_and_rejudge = function (form) {
+                if (confirm("{{ _('Are you sure you want to rejudge?') }}")) {
+                    form.submit()
+                }
+            };
+        </script>
+    {% endcompress %}
+    {% if iframe == '1' %}
+        {% set iframe_query = '?iframe=1' %}
+    {% else %}
+        {% set iframe_query = '' %}
+    {% endif %}
+    <form id="rejudge_form" action="{{ url('beta_submission_rejudge') }}{{iframe_query}}" method="post">
+        {% csrf_token %}
+        <a href="#" onclick="confirm_and_rejudge(parentNode)" class="button">{{ _('Rejudge') }}</a>
+        <input type="hidden" name="id" value="{{ submission.id }}" />
+        <input type="hidden" name="path" value="{{ url('beta_problem', problem.code) }}" />
+    </form>
+{% endif %}
+</div>

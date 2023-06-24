@@ -167,7 +167,7 @@ class SubmissionStatus(SubmissionDetailBase):
 
 from funix.utils.problem import map_test_cases
 class SubmissionTestCaseQueryBeta(SubmissionStatus):
-    template_name = 'funix/problem/testcases-and-submission.html'
+    template_name = 'funix/submission/info.html'
 
     def get(self, request, *args, **kwargs):
         if 'id' not in request.GET or not request.GET['id'].isdigit():
@@ -179,7 +179,7 @@ class SubmissionTestCaseQueryBeta(SubmissionStatus):
         context = super().get_context_data(**kwargs)
         submission = self.object
         problem = submission.problem
-        context['problem'] = problem
+        context['problem'] = problem    
         context['testcases_map'] = map_test_cases(problem.cases.all())
         
         return context

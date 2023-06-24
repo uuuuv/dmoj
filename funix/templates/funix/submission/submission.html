@@ -1,5 +1,10 @@
-<div class="codeplace">
-    {% if not request.user.is_authenticated %}
+
+
+    {% if submission %}
+    {% set is_processing = submission is not none %}
+    {% endif %}
+
+{% if not request.user.is_authenticated %}
         <div class="login_required_overlay">
             <div>
                 <p>Login is needed to make submission</p>
@@ -14,7 +19,6 @@
         {% include "funix/submission/editor.html" %}
 
         <div id="event-update" class="submission">
-            {% include 'funix/submission/submission.html' %}
+            {% include 'funix/submission/info.html' %}
         </div>
     {% endif %}
-</div>

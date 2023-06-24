@@ -5,21 +5,20 @@
     {{ form.media.css }}
     <link rel="stylesheet" href="{{ static('plugins/css/resizable.min.css') }}">
     <link rel="stylesheet" href="{{ static('funix/css/problem.css') }}">
-{% endblock %}
+    <link rel="stylesheet" href="{{ static('funix/css/submission-status.css') }}" />
 
-{% block js_media %}
+
+
+    {% compress js %}
+    <script type="text/javascript" src="{{ static('event.js') }}"></script>
     <script src="{{static('plugins/js/resizable.min.js')}}" type="text/javascript"></script>
     <script type="text/javascript" src="{{ ACE_URL }}/ace.js"></script>
     {{ form.media.js }}
 
-    {% compress js %}
         {% include 'funix/problem/ace-editor.html' %}
     {% endcompress %}
 
-    <script type="text/javascript" src="{{ static('event.js') }}"></script>
-    {% if submission and not submission.is_graded and last_msg %}
-        {% include "funix/problem/js-event.html" %}
-    {% endif %}
+
 
     {% if submission and not submission.is_graded %}
         <script type="text/javascript">
@@ -35,10 +34,10 @@
     {% endif %}
 {% endblock %}
 
+
+
 {% block problem_content %} 
-    {% if submission %}
-    {% set is_processing = submission is not none %}
-    {% endif %}
+ 
 
     <div class="problem_container">
         <div class="topbar">
@@ -51,118 +50,8 @@
                  {% include "funix/problem/problem-details.html" %} 
             </div>
 
-
             <div class="codeplace">
-                {% if not request.user.is_authenticated %}
-                    <div class="login_required_overlay">
-                        <div>
-                            <p>Login is needed to make submission</p>
-                            <a href="{{ url('auth_login') }}?next={{ LOGIN_RETURN_PATH|urlencode }}">{{ _('Login!') }}</a>
-                        </div>
-                    </div>
-                {% else %}
-
-                    <div class="toolbar">
-                        {% include "funix/problem/toolbar.html" %}
-                    </div>
-
-                    {# uuuuvcomment ------------------------- submission form ------------------------- #}
-                    <form id="problem_submit" method="POST">
-                        {# uuuuvcomment ------------------------- choose languages ------------------------- #}
-                        {% if not no_judges %}
-                           <div id="language-bar">
-                            <div id="language">
-                                {{ form.language.errors }}
-                                <div id="language-select">
-                                    <select id="id_language" name="language">
-                                        {% for lang in form.fields.language.queryset %}
-                                            <option 
-                                                value="{{ lang.id }}" 
-                                                data-id="{{ lang.id }}" 
-                                                data-name="{{ lang.name }}"
-                                                data-info="{{ lang.info }}" 
-                                                data-ace="{{ lang.ace }}"
-                                                data-judge-info="{{ runtime_versions(lang.runtime_versions()) }}"
-                                                {% if lang.id == default_lang.id %}selected{% endif %}
-                                            >
-                                                {{ lang.name }}
-                                            </option>
-                                        {% endfor %}
-                                    </select>
-                                </div>
-                            </div>
-                           </div>
-                        {% endif %}
-
-                        {# uuuuvcomment ------------------------- warning ------------------------- #}
-                        <div class="codeplace_warning">
-                            {% if not no_judges %}
-                                {% if default_lang not in form.fields.language.queryset %}
-                                    <div class="alert alert-warning alert-dismissable">
-                                        <a class="close">x</a>
-                                        <b>{{ _('Warning!') }}</b>
-                                        {{ _('Your default language, %(language)s, is unavailable for this problem and has been deselected.', language=bold(default_lang.name)) }}
-                                    </div>
-                                {% endif %}
-                        
-                                {% if request.in_contest and submission_limit %}
-                                    {% if submissions_left > 0 %}
-                                        <div class="alert alert-warning alert-dismissable">
-                                            <a class="close">x</a>
-                                            {% trans left=submissions_left -%}
-                                                You have {{ left }} submission left
-                                                {%- pluralize -%}
-                                                You have {{ left }} submissions left
-                                            {%- endtrans %}
-                                        </div>
-                                    {% else %}
-                                        <div class="alert alert-warning alert-dismissable">
-                                            <a class="close">x</a>
-                                            {{ _('You have 0 submissions left') }}
-                                        </div>
-                                    {% endif %}
-                                {% endif %}
-                            {% endif %}
-                        </div>
-
-                        {# uuuuvcomment ------------------------- editor ------------------------- #}
-                        <div class="codeplace_editor">
-                            {% csrf_token %}
-                            {{ form.non_field_errors() }}
-                            <div id="submit-wrapper">
-                                <div id="editor">
-                                    {{ form.source.errors }}
-                                    {{ form.source }}
-                                </div>
-                            </div>
-                        </div>
-
-                        {# uuuuvcomment ------------------------- submit button ------------------------- #}
-                        {# uuuuvcomment ------------------ or no judge is available --------------------- #}
-                        <div class="submitbar">
-                            {% if no_judges %}
-                                <span style="color: red">{{ _('No judge is available for this problem.') }}</span>
-                            {% else %}
-                                <div class="submit-bar">
-                                    <div>
-                                        {{ form.judge }}
-                                    </div>
-
-                                    <div class="submitbar_buttons">
-                                        <input id="submit-button"  type="submit" value="{% if submission %}{{ _('Resubmit!') }}{% else %}{{ _('Submit') }}{% endif %}" class="button accent"
-                                        {% if request.in_contest and submission_limit and not submissions_left %}disabled{% endif %}>
-                                    </div>
-                                </div>
-                            {% endif %}
-                        </div>
-                    </form>
-            
-                    <div id="event-update" class="submission">
-                        {# uuuuvcomment ------------------------- submission nav ------------------------- #}
-                        {% include 'funix/problem/testcases-and-submission.html' %}
-                        
-                    </div>
-                {% endif %}
+                {% include 'funix/submission/submission.html' %}
             </div>
         </div>
     </div>
@@ -206,32 +95,77 @@
         }
     </script>
 
-
     <script type="text/javascript">
-        $.ajax({
-            type:'POST',
-            url:'{% url "create" %}',
-            data:{
-                title:$('#title').val(),
-                description:$('#description').val(),
-                csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
-                action: 'post'
-            },
-            success:function(json){
-                document.getElementById("post-form").reset();
-                $(".posts").prepend('<div class="col-md-6">'+
-                    '<div class="row no-gutters border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">' +
-                        '<div class="col p-4 d-flex flex-column position-static">' +
-                            '<h3 class="mb-0">' + json.title + '</h3>' +
-                            '<p class="mb-auto">' + json.description + '</p>' +
-                        '</div>' +
-                    '</div>' +
-                '</div>' 
-                )
-            },
-            error : function(xhr,errmsg,err) {
-            console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
-        }
+        $(document).on('submit', '#problem_submit',function(e){
+            e.preventDefault();
+            $.ajax({
+                type:'POST',
+                url: "{{ url('beta_problem', problem.code) }}",
+                 data: $('form#problem_submit').serialize(),
+                success:function(json){
+                    console.log('get json')
+                    document.querySelector('.codeplace').innerHTML = json.html;
+                    console.log(json)
+    
+                    $(function () {
+                        var blocked = false, request = false;
+                        var list = $('#test-cases');
+                  
+                        function update() {
+                            console.log('update')
+                            if (blocked) {
+                                request = true;
+                                return;
+                            }
+                            request = false;
+                            blocked = true;
+                            $.ajax({
+                                url: '{{ url('beta_submission_testcases_query') }}',
+                                data: {id: json.submission_id}
+                            }).done(function (data) {
+                                console.log("done")
+                                  const update_zone = document.getElementById('event-update')
+                                  update_zone.innerHTML = data;
+                                  
+                                list.empty().html(data).find('.toggle').each(function () {
+                                    register_toggle($(this));
+                                });
+                                setTimeout(function () {
+                                    blocked = false;
+                                    if (request)
+                                        update();
+                                }, 500);
+                            }).fail(function (data) {
+                                console.log('Failed to update testcases!');
+                            });
+                  
+                            if ($(window).scrollTop() + $(window).height() > $(document).height() - 100)
+                                $("html, body").animate({scrollTop: $(document).height()}, 0);
+                        }
+                  
+                        var receiver = new EventReceiver(
+                            "{{ EVENT_DAEMON_LOCATION }}", "{{ EVENT_DAEMON_POLL_LOCATION }}",
+                            [`sub_${ json.submission_id_secret }`], json.last_msg, function (message) {
+                                console.log("event receiver")
+                                switch (message.type) {
+                                    case 'internal-error':
+                                    case 'grading-end':
+                                    case 'compile-error':
+                                        $('#abort-button').remove();
+                                        $('#grading-label').remove();
+                                    case 'test-case':
+                                    case 'grading-begin':
+                                    case 'processing':
+                                        update();
+                                }
+                            }
+                        )
+                    });
+                },
+                error : function(xhr,errmsg,err) {
+                console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+            }
+            });
         });
     </script>
 {% endblock %}
