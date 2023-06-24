@@ -29,7 +29,7 @@ Sau khi nhấn submit, site sẽ:
 - Tạo file init.yml theo những gì ta đã nhập.
 
 Sau khi tạo xong, judge sẽ cập nhật data này để chấm điểm.
-Phần site sẽ có thông tin các test cases của problem để hiển thị.
+Phần site sẽ có thông tin các test cases của problem để hiển thị trước cho thí sinh.
 
 ### Tạo batched test data
 [Batched test data](./images/batched-cases.jpg)

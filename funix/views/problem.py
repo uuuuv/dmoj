@@ -394,7 +394,7 @@ class ProblemCommentsBeta(ProblemMixin, SolvedProblemMixin, CommentedDetailView)
         return 'p:%s' % self.object.code
 
     def get_context_data(self, **kwargs):
-        context = super(ProblemComments, self).get_context_data(**kwargs)
+        context = super(ProblemCommentsBeta, self).get_context_data(**kwargs)
         user = self.request.user
         authed = user.is_authenticated
         context['has_submissions'] = authed and Submission.objects.filter(user=user.profile,
