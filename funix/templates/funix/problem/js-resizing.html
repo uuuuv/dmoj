@@ -1,29 +1,70 @@
 <script type="text/javascript">
   // collapse - expand coding place 100%
   function expandEditor(event) {
-    var codeplace = $(".codeplace");
+    var codeplace = document.querySelector('.codeplace')
     codeplace.toggleClass("expand");
   }
 
   // render resizer buttons
-  var vertical = `
-        <div class="resizer resizer-v">
-            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="17" height="17" viewBox="0 0 17 17">
-                <g></g>
-                <path d="M11.642 12.063l0.716 0.698-3.858 3.955-3.858-3.954 0.716-0.698 2.642 2.707v-12.542l-2.642 2.708-0.716-0.699 3.858-3.954 3.858 3.954-0.716 0.698-2.642-2.707v12.543l2.642-2.709z" fill="inherit" />
-            </svg>
-        </div>
-        `;
+  window.addResizingButtons = function() {
+
+  
+    // horizontal resizing
+    $(".codeplace").resizable({
+      direction: ["left"],
+      stop: () => {
+        localStorage.setItem('editor_width', $(".codeplace").width()) 
+      }
+    });
+  
+    // updating #ace_source height when and after vertical resizing
+    $(".codeplace_editor").resizable({
+      direction: ["bottom"],
+      resize: () => {
+        $("#ace_source").height($(".codeplace_editor").height());
+      },
+      stop: () => {
+        $("#ace_source").height($(".codeplace_editor").height());
+        window.aceEditor.resize();
+        localStorage.setItem('editor_height', $(".codeplace_editor").height())  
+      },
+    });
+
+
+      var vertical = `
+      <div class="resizer resizer-v">
+          <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="17" height="17" viewBox="0 0 17 17">
+              <g></g>
+              <path d="M11.642 12.063l0.716 0.698-3.858 3.955-3.858-3.954 0.716-0.698 2.642 2.707v-12.542l-2.642 2.708-0.716-0.699 3.858-3.954 3.858 3.954-0.716 0.698-2.642-2.707v12.543l2.642-2.709z" fill="inherit" />
+          </svg>
+      </div>
+      `;
 
   var horizontal = `
-        <div class="resizer resizer-h">
-            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="17" height="17" viewBox="0 0 17 17">
-                <g></g>
-                <path d="M16.716 8.5l-3.954 3.858-0.698-0.716 2.707-2.642h-12.542l2.708 2.642-0.698 0.716-3.955-3.858 3.954-3.858 0.698 0.716-2.707 2.642h12.543l-2.708-2.642 0.698-0.716 3.954 3.858z" fill="inherit" />
-            </svg>
-        </div>
-        `;
+      <div class="resizer resizer-h">
+          <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="17" height="17" viewBox="0 0 17 17">
+              <g></g>
+              <path d="M16.716 8.5l-3.954 3.858-0.698-0.716 2.707-2.642h-12.542l2.708 2.642-0.698 0.716-3.955-3.858 3.954-3.858 0.698 0.716-2.707 2.642h12.543l-2.708-2.642 0.698-0.716 3.954 3.858z" fill="inherit" />
+          </svg>
+      </div>
+      `;
 
-  $(".codeplace .resizable-l")[0].innerHTML = horizontal;
-  $(".codeplace .resizable-b")[0].innerHTML = vertical;
+
+  document.querySelector('.codeplace .resizable-l').innerHTML = horizontal;
+  document.querySelector('.codeplace .resizable-b').innerHTML = vertical;
+
+  const initialResizableHeight = localStorage.getItem('editor_height');
+  if (initialResizableHeight && !isNaN(Number(initialResizableHeight))) {
+    $(".codeplace_editor").height(Number(initialResizableHeight))
+  }
+
+  const initialResizableWidth = localStorage.getItem('editor_width');
+  if (initialResizableWidth && !isNaN(Number(initialResizableWidth))) {
+    $(".codeplace").width(Number(initialResizableWidth))
+  }
+
+  $("#ace_source").height($(".codeplace_editor").height());
+  }
+
+  addResizingButtons()
 </script>

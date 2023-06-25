@@ -6,8 +6,16 @@
   {% endblock %}
 {% endblock %} 
 
+{% block js_media %}
+  {% compress js %}
+  <script src="{{static('plugins/js/resizable.min.js')}}" type="text/javascript"></script>
+  <script type="text/javascript" src="{{ static('event.js') }}"></script>
+  <script type="text/javascript" src="{{ ACE_URL }}/ace.js"></script>
+  {{ form.media.js }}
 
-
+  {% include 'funix/problem/ace-editor.html' %}
+  {% endcompress %}
+{% endblock %}
 
 {% block body %}
 <div id="beta-container" >

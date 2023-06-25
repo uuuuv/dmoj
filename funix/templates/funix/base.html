@@ -82,7 +82,7 @@
         </style>
     {% endif %}
     
-    {% block media %}{% endblock %}
+    {% block media %}{% endblock %} {# MEDIA BLOCK #}
     {% if not INLINE_JQUERY %}
         <script src="{{ JQUERY_JS }}"></script>
     {% endif %}
@@ -107,7 +107,7 @@
             });
         </script>
     {% endcompress %}
-    {% block js_media %}{% endblock %}
+    {% block js_media %}{% endblock %} {# BLOCK JS MEDIA #}
     {% if request.in_contest %}
         <script>$(function () {
             count_down($("#contest-time-remaining"));
