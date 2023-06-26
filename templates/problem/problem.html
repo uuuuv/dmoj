@@ -96,30 +96,28 @@
 {% endblock %} {% block info_float %} {% if request.user.is_authenticated and
 request.in_contest and submission_limit %} {% if submissions_left > 0 %}
 <a
-  href="{{ url('problem_submit', problem.code) }}"
+  href="{{ url('beta_problem', problem.code) }}"
   class="unselectable button full"
 >
-  {{ _('Submit solution') }}lll
+  {{ _('Submit solution beta') }}
 </a>
 
 <div class="submissions-left">
   {% trans trimmed counter=submissions_left %} {{ counter }} submission left {%
   pluralize %} {{ counter }} submissions left {% endtrans %}
 </div>
-{% else %}
-{# uuuuvcomment #}
+{% else %} {# uuuuvcomment #}
 <a class="unselectable button full disabled">{{ _('Submit solution beta') }}</a>
 {# uuuuvcomment #}
 <div class="no-submissions-left submissions-left">
   {{ _('0 submissions left') }}
 </div>
-{% endif %} {% else %}
-{# uuuuvcomment #}
+{% endif %} {% else %} {# uuuuvcomment #}
 <a
-href="{{ url('beta_problem', problem.code) }}"
-class="unselectable button full"
+  href="{{ url('beta_problem', problem.code) }}"
+  class="unselectable button full"
 >
-{{ _('Submit solution beta') }}
+  {{ _('Submit solution beta') }}
 </a>
 <br />
 {# uuuuvcomment #} {% endif %}

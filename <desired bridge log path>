@@ -1019,3 +1019,102 @@ INFO 2023-06-11 11:56:02,766 judge_handler jd1: 2 test case(s) completed on: 113
 INFO 2023-06-11 11:56:02,770 judge_handler jd1: Grading has ended on: 113
 INFO 2023-06-11 11:56:02,771 judge_list Judge available after grading 113: jd1
 INFO 2023-06-11 16:32:34,705 daemon Exiting due to SIGINT
+INFO 2023-06-25 02:07:25,460 judge_handler Judge connected from: ('172.17.0.2', 54136)
+INFO 2023-06-25 02:07:25,462 judge_handler Judge authenticated: ('172.17.0.2', 54136) (jd1)
+INFO 2023-06-25 06:19:57,443 daemon Exiting due to SIGINT
+INFO 2023-06-25 15:09:11,458 judge_handler Judge connected from: ('172.17.0.2', 53784)
+INFO 2023-06-25 15:09:11,462 judge_handler Judge authenticated: ('172.17.0.2', 53784) (jd1)
+INFO 2023-06-25 17:04:56,621 daemon Exiting due to SIGINT
+INFO 2023-06-25 17:10:07,629 judge_handler Judge connected from: ('172.17.0.2', 54810)
+INFO 2023-06-25 17:10:07,632 judge_handler Judge authenticated: ('172.17.0.2', 54810) (jd1)
+INFO 2023-06-25 17:42:06,678 judge_handler Judge disconnected from: ('172.17.0.2', 54810) with name jd1
+INFO 2023-06-25 17:43:09,835 judge_handler Judge connected from: ('172.17.0.2', 36224)
+INFO 2023-06-25 17:43:09,838 judge_handler Judge authenticated: ('172.17.0.2', 36224) (jd1)
+INFO 2023-06-25 17:54:41,601 judge_list Free judges: 1
+INFO 2023-06-25 17:54:41,601 judge_list Dispatched submission 558 to: jd1
+INFO 2023-06-25 17:54:41,607 judge_handler Submission acknowledged: 558
+INFO 2023-06-25 17:54:41,746 judge_handler jd1: Submission generated compiler messages: 558
+INFO 2023-06-25 17:54:41,748 judge_handler jd1: Grading has begun on: 558
+INFO 2023-06-25 17:54:41,871 judge_handler jd1: 2 test case(s) completed on: 558
+INFO 2023-06-25 17:54:41,895 judge_handler jd1: 1 test case(s) completed on: 558
+INFO 2023-06-25 17:54:41,899 judge_handler jd1: Grading has ended on: 558
+INFO 2023-06-25 17:54:41,899 judge_list Judge available after grading 558: jd1
+INFO 2023-06-25 17:55:20,148 judge_list Free judges: 1
+INFO 2023-06-25 17:55:20,148 judge_list Dispatched submission 559 to: jd1
+INFO 2023-06-25 17:55:20,153 judge_handler Submission acknowledged: 559
+INFO 2023-06-25 17:55:20,277 judge_handler jd1: Submission generated compiler messages: 559
+INFO 2023-06-25 17:55:20,279 judge_handler jd1: Grading has begun on: 559
+INFO 2023-06-25 17:55:20,416 judge_handler jd1: 2 test case(s) completed on: 559
+INFO 2023-06-25 17:55:20,459 judge_handler jd1: 1 test case(s) completed on: 559
+INFO 2023-06-25 17:55:20,463 judge_handler jd1: Grading has ended on: 559
+INFO 2023-06-25 17:55:20,463 judge_list Judge available after grading 559: jd1
+INFO 2023-06-25 17:55:52,504 judge_list Free judges: 1
+INFO 2023-06-25 17:55:52,504 judge_list Dispatched submission 560 to: jd1
+INFO 2023-06-25 17:55:52,509 judge_handler Submission acknowledged: 560
+INFO 2023-06-25 17:55:52,596 judge_handler jd1: Submission generated compiler messages: 560
+INFO 2023-06-25 17:55:52,599 judge_handler jd1: Grading has begun on: 560
+INFO 2023-06-25 17:55:52,697 judge_handler jd1: 2 test case(s) completed on: 560
+INFO 2023-06-25 17:55:52,904 judge_handler jd1: 1 test case(s) completed on: 560
+INFO 2023-06-25 17:55:52,914 judge_handler jd1: Grading has ended on: 560
+INFO 2023-06-25 17:55:52,915 judge_list Judge available after grading 560: jd1
+INFO 2023-06-25 18:36:29,242 judge_list Free judges: 1
+INFO 2023-06-25 18:36:29,242 judge_list Dispatched submission 561 to: jd1
+INFO 2023-06-25 18:36:29,247 judge_handler Submission acknowledged: 561
+INFO 2023-06-25 18:36:29,383 judge_handler jd1: Submission generated compiler messages: 561
+INFO 2023-06-25 18:36:29,384 judge_handler jd1: Grading has begun on: 561
+INFO 2023-06-25 18:36:29,528 judge_handler jd1: 3 test case(s) completed on: 561
+INFO 2023-06-25 18:36:29,531 judge_handler jd1: Grading has ended on: 561
+INFO 2023-06-25 18:36:29,532 judge_list Judge available after grading 561: jd1
+INFO 2023-06-25 19:26:35,532 judge_list Free judges: 1
+INFO 2023-06-25 19:26:35,532 judge_list Dispatched submission 562 to: jd1
+INFO 2023-06-25 19:26:35,536 judge_handler Submission acknowledged: 562
+INFO 2023-06-25 19:26:35,670 judge_handler jd1: Submission failed to compile: 562
+INFO 2023-06-25 19:26:35,670 judge_list Judge available after grading 562: jd1
+INFO 2023-06-25 19:31:33,434 judge_list Free judges: 1
+INFO 2023-06-25 19:31:33,435 judge_list Dispatched submission 563 to: jd1
+INFO 2023-06-25 19:31:33,440 judge_handler Submission acknowledged: 563
+INFO 2023-06-25 19:31:33,580 judge_handler jd1: Submission failed to compile: 563
+INFO 2023-06-25 19:31:33,581 judge_list Judge available after grading 563: jd1
+INFO 2023-06-25 19:32:11,029 judge_list Free judges: 1
+INFO 2023-06-25 19:32:11,029 judge_list Dispatched submission 564 to: jd1
+INFO 2023-06-25 19:32:11,034 judge_handler Submission acknowledged: 564
+INFO 2023-06-25 19:32:11,166 judge_handler jd1: Submission failed to compile: 564
+INFO 2023-06-25 19:32:11,167 judge_list Judge available after grading 564: jd1
+INFO 2023-06-25 19:32:17,020 judge_list Free judges: 1
+INFO 2023-06-25 19:32:17,020 judge_list Dispatched submission 565 to: jd1
+INFO 2023-06-25 19:32:17,025 judge_handler Submission acknowledged: 565
+INFO 2023-06-25 19:32:17,113 judge_handler jd1: Submission generated compiler messages: 565
+INFO 2023-06-25 19:32:17,115 judge_handler jd1: Grading has begun on: 565
+INFO 2023-06-25 19:32:17,168 judge_handler jd1: 1 test case(s) completed on: 565
+INFO 2023-06-25 19:32:17,418 judge_handler jd1: 1 test case(s) completed on: 565
+INFO 2023-06-25 19:32:17,507 judge_handler jd1: 1 test case(s) completed on: 565
+INFO 2023-06-25 19:32:17,511 judge_handler jd1: Grading has ended on: 565
+INFO 2023-06-25 19:32:17,511 judge_list Judge available after grading 565: jd1
+INFO 2023-06-25 19:33:07,162 judge_list Free judges: 1
+INFO 2023-06-25 19:33:07,162 judge_list Dispatched submission 566 to: jd1
+INFO 2023-06-25 19:33:07,167 judge_handler Submission acknowledged: 566
+INFO 2023-06-25 19:33:07,259 judge_handler jd1: Submission generated compiler messages: 566
+INFO 2023-06-25 19:33:07,261 judge_handler jd1: Grading has begun on: 566
+INFO 2023-06-25 19:33:07,461 judge_handler jd1: 2 test case(s) completed on: 566
+INFO 2023-06-25 19:33:07,679 judge_handler jd1: 1 test case(s) completed on: 566
+INFO 2023-06-25 19:33:07,682 judge_handler jd1: Grading has ended on: 566
+INFO 2023-06-25 19:33:07,683 judge_list Judge available after grading 566: jd1
+INFO 2023-06-25 19:33:30,326 judge_list Free judges: 1
+INFO 2023-06-25 19:33:30,326 judge_list Dispatched submission 567 to: jd1
+INFO 2023-06-25 19:33:30,331 judge_handler Submission acknowledged: 567
+INFO 2023-06-25 19:33:30,426 judge_handler jd1: Submission generated compiler messages: 567
+INFO 2023-06-25 19:33:30,429 judge_handler jd1: Grading has begun on: 567
+INFO 2023-06-25 19:33:30,482 judge_handler jd1: 1 test case(s) completed on: 567
+INFO 2023-06-25 19:33:30,733 judge_handler jd1: 1 test case(s) completed on: 567
+INFO 2023-06-25 19:33:30,831 judge_handler jd1: 1 test case(s) completed on: 567
+INFO 2023-06-25 19:33:30,836 judge_handler jd1: Grading has ended on: 567
+INFO 2023-06-25 19:33:30,836 judge_list Judge available after grading 567: jd1
+INFO 2023-06-25 19:33:38,525 judge_list Free judges: 1
+INFO 2023-06-25 19:33:38,525 judge_list Dispatched submission 568 to: jd1
+INFO 2023-06-25 19:33:38,533 judge_handler Submission acknowledged: 568
+INFO 2023-06-25 19:33:38,629 judge_handler jd1: Submission generated compiler messages: 568
+INFO 2023-06-25 19:33:38,631 judge_handler jd1: Grading has begun on: 568
+INFO 2023-06-25 19:33:38,741 judge_handler jd1: 2 test case(s) completed on: 568
+INFO 2023-06-25 19:33:39,064 judge_handler jd1: 1 test case(s) completed on: 568
+INFO 2023-06-25 19:33:39,069 judge_handler jd1: Grading has ended on: 568
+INFO 2023-06-25 19:33:39,069 judge_list Judge available after grading 568: jd1
