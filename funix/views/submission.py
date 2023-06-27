@@ -184,9 +184,6 @@ class SubmissionTestCaseQueryBeta(SubmissionStatus):
         
         return context
 
-
-
-
 @require_POST
 def abort_submission_beta(request, submission):
     submission = get_object_or_404(Submission, id=int(submission))

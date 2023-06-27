@@ -1,5 +1,4 @@
 import logging
-import re
 
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
@@ -149,8 +148,7 @@ def is_anonymous(self):
 
 
 from funix.utils.problem import map_test_cases
-class ProblemBeta( ProblemMixin, TitleMixin, SingleObjectFormView):
-
+class ProblemBeta(ProblemMixin, TitleMixin, SingleObjectFormView):
     template_name = 'funix/problem/problem.html'
     form_class = ProblemSubmitForm
 
@@ -370,7 +368,7 @@ class ProblemBeta( ProblemMixin, TitleMixin, SingleObjectFormView):
 from judge.views.problem import ProblemList
 
 class ProblemListBeta(ProblemList):
-    template_name = 'funix/problem/problem-list.html'
+    template_name = 'funix/problem/list.html'
 
     def get_context_data(self, **kwargs):
         context = super(ProblemListBeta, self).get_context_data(**kwargs)
@@ -380,15 +378,15 @@ class ProblemListBeta(ProblemList):
     
 # -----------------------------------------------------------------------------------
 from judge.comments import CommentedDetailView
-from judge.models import ContestSubmission, Judge, Language, Problem, ProblemGroup, ProblemPointsVote, \
-    ProblemTranslation, ProblemType, RuntimeVersion, Solution, Submission, SubmissionSource
+from judge.models import ContestSubmission, Judge, Language, Problem, ProblemPointsVote, \
+    ProblemTranslation,  RuntimeVersion, Solution, Submission, SubmissionSource
 from judge.utils.opengraph import generate_opengraph
-from judge.utils.pdfoid import PDF_RENDERING_ENABLED, render_pdf
+from judge.utils.pdfoid import PDF_RENDERING_ENABLED
 from judge.utils.tickets import own_ticket_filter
 
 class ProblemCommentsBeta(ProblemMixin, SolvedProblemMixin, CommentedDetailView):
     context_object_name = 'problem'
-    template_name = 'funix/problem/problem-comments.html'
+    template_name = 'funix/comment/comments.html'
 
     def get_comment_page(self):
         return 'p:%s' % self.object.code
@@ -460,5 +458,3 @@ class ProblemCommentsBeta(ProblemMixin, SolvedProblemMixin, CommentedDetailView)
             context['vote'] = None
         context['iframe'] = self.request.GET.get('iframe')
         return context
-
-# -------------------- update problem data ----------------------------
