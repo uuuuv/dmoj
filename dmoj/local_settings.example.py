@@ -1,3 +1,5 @@
+import os
+
 #####################################
 ########## Django settings ##########
 #####################################
@@ -10,14 +12,17 @@
 # SECURITY WARNING: keep the secret key used in production secret!
 # You may use this command to generate a key:
 # python3 -c 'from django.core.management.utils import get_random_secret_key;print(get_random_secret_key())'
-SECRET_KEY = '*yi4(4v_e9-_j_4y189vgf9434ts-p1hcuzx%_%j%n!89soj33'
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY','*yi4(4v_e9-_j_4y189vgf9434ts-p1hcuzx%_%j%n!89soj33')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True  # Change to False once you are done with runserver testing.
+DEBUG = os.environ.get('DJANGO_DEBUG', '') != 'False'  # Change to False once you are done with runserver testing.
+
+# Common variables
+HOST = os.environ.get('DJANGO_HOST', '127.0.0.1')
 
 # Uncomment and set to the domain names this site is intended to serve.
 # You must do this once you set DEBUG to False.
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+ALLOWED_HOSTS = [HOST,]
 
 # Optional apps that DMOJ can make use of.
 INSTALLED_APPS += (
@@ -41,8 +46,6 @@ if DEBUG == False:
         }
     }
 
-
-
 # Your database credentials. Only MySQL is supported by DMOJ.
 # Documentation: <https://docs.djangoproject.com/en/3.2/ref/databases/>
 DATABASES = {
@@ -61,7 +64,8 @@ DATABASES = {
 
 # Sessions.
 # Documentation: <https://docs.djangoproject.com/en/3.2/topics/http/sessions/>
-#SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
+if DEBUG == False:
+    SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
 
 # Internationalization.
 # Documentation: <https://docs.djangoproject.com/en/3.2/topics/i18n/>
@@ -189,8 +193,8 @@ EVENT_DAEMON_POST = 'ws://127.0.0.1:15101/'
 # i.e. the path to /channels/ exposed by the daemon, through whatever proxy setup you have.
 
 # Using our standard nginx configuration, these should be:
-EVENT_DAEMON_GET = 'ws://127.0.0.1/event/'
-#EVENT_DAEMON_GET_SSL = 'wss://<your domain>/event/'  # Optional
+EVENT_DAEMON_GET = 'ws://{}/event/'.format(HOST)
+EVENT_DAEMON_GET_SSL = 'wss://{}/event/'.format(HOST)  # Optional
 EVENT_DAEMON_POLL = '/channels/'
 
 # If you would like to use the AMQP-based event server from <https://github.com/DMOJ/event-server>,
@@ -337,7 +341,6 @@ LOGGING = {
 # Do try to keep it separate so you can quickly patch in new settings.
 
 DMOJ_PROBLEM_DATA_ROOT = '/projects/foj/problems'
-
 
 # uuuuvcomment allow to embed <iframe>
 # X_FRAME_OPTIONS = 'https://courses.funix.edu.vn'
