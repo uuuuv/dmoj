@@ -288,7 +288,7 @@ LOGGING = {
         'bridge': {
             'level': 'INFO',
             'class': 'logging.handlers.RotatingFileHandler',
-            'filename': 'bridge.log',
+            'filename':  os.path.join(PARENT_BASE_DIR, 'tmp', 'bridge.log'),
             'maxBytes': 10 * 1024 * 1024,
             'backupCount': 10,
             'formatter': 'file',
