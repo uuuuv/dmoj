@@ -349,3 +349,12 @@ DMOJ_PROBLEM_DATA_ROOT = '/projects/foj/problems'
 # CSRF_COOKIE_SECURE = True
 # SESSION_COOKIE_SECURE = True
 # SESSION_COOKIE_SAMESITE = 'None'
+
+##### static files #####
+from django.conf import settings
+
+BASE_DIR = settings.BASE_DIR
+STATICFILES_DIRS = settings.STATICFILES_DIRS
+STATICFILES_DIRS = STATICFILES_DIRS + [
+    os.path.join(BASE_DIR, 'funix/static'),
+]
