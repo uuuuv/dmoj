@@ -1,4 +1,8 @@
 import os
+from django.conf import settings
+
+BASE_DIR = settings.BASE_DIR
+PARENT_BASE_DIR = os.path.join(BASE_DIR, '..')
 
 #####################################
 ########## Django settings ##########
@@ -137,7 +141,8 @@ SERVER_EMAIL = 'DMOJ: Modern Online Judge <errors@dmoj.ca>'
 # Change this to somewhere more permanent, especially if you are using a
 # webserver to serve the static files. This is the directory where all the
 # static files DMOJ uses will be collected to.
-STATIC_ROOT = '/projects/foj/static'
+# STATIC_ROOT = '/projects/foj/static'
+STATIC_ROOT = os.path.join(PARENT_BASE_DIR, 'static')
 STATIC_URL = '/static/'
 
 # Uncomment to use hashed filenames with the cache framework.
@@ -283,7 +288,7 @@ LOGGING = {
         'bridge': {
             'level': 'INFO',
             'class': 'logging.handlers.RotatingFileHandler',
-            'filename': '<desired bridge log path>',
+            'filename': 'bridge.log',
             'maxBytes': 10 * 1024 * 1024,
             'backupCount': 10,
             'formatter': 'file',
@@ -336,24 +341,22 @@ LOGGING = {
 #SOCIAL_AUTH_GITHUB_SECURE_KEY = ''
 #SOCIAL_AUTH_GITHUB_SECURE_SECRET = ''
 
+# DMOJ_PROBLEM_DATA_ROOT = '/projects/foj/problems'
+DMOJ_PROBLEM_DATA_ROOT = os.path.join(PARENT_BASE_DIR, 'problems')
+
 ## ======== Custom Configuration ========
 # You may add whatever Django configuration you would like here.
 # Do try to keep it separate so you can quickly patch in new settings.
 
-DMOJ_PROBLEM_DATA_ROOT = '/projects/foj/problems'
-
 # uuuuvcomment allow to embed <iframe>
-# X_FRAME_OPTIONS = 'https://courses.funix.edu.vn'
-# X_FRAME_OPTIONS = 'ALLOWALL'
-# CSRF_COOKIE_SAMESITE = 'None'
-# CSRF_COOKIE_SECURE = True
-# SESSION_COOKIE_SECURE = True
-# SESSION_COOKIE_SAMESITE = 'None'
+if DEBUG == False:
+    X_FRAME_OPTIONS = 'ALLOWALL'
+    CSRF_COOKIE_SAMESITE = 'None'
+    CSRF_COOKIE_SECURE = True
+    SESSION_COOKIE_SECURE = True
+    SESSION_COOKIE_SAMESITE = 'None'
 
-##### static files #####
-from django.conf import settings
-
-BASE_DIR = settings.BASE_DIR
+# uuuuvcomment add static dirs
 STATICFILES_DIRS = settings.STATICFILES_DIRS
 STATICFILES_DIRS = STATICFILES_DIRS + [
     os.path.join(BASE_DIR, 'funix/static'),
