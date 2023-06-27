@@ -9,7 +9,8 @@
 - KHÔNG `git checkout v4.0.0`.
 - Thay vào đó checkout nhánh đang làm `git switch feature/fe-user-problem` (nhánh `main` chưa có gì)
 - Đổi `python3 manage.py loaddata language_small` thành `python3 manage.py loaddata language_all` để cài đặt tất cả các ngôn ngữ lập trình. Nếu chọn small thì chỉ có khoảng 20 ngôn ngữ.
-- Do đã có sẵn file cấu hình, nên khi chạy test 'runserver', 'celery', 'bridged' có thể bị lỗi thiếu dependencies. Cuối trang có 2 dependencies, ta cài trước luôn. Bạn cũng có thể xóa các file cấu hình rồi tạo lại theo hướng dẫn.
+- Do đã có sẵn file cấu hình, nên khi chạy test 'runserver', 'celery', 'bridged' có thể bị lỗi thiếu dependencies. Cuối trang có 2 dependencies, ta cài trước luôn. 
+- Bạn cũng có thể xóa các file cấu hình rồi tạo lại theo hướng dẫn.
 
 ```shell
   (venv) npm install qu ws simplesets
@@ -17,15 +18,14 @@
 ```
 
 - Các bước còn lại làm tương tự, sửa lại cấu hình cho phù hợp.
-- Copy thư mục `funix/static/funix` vào thư mục `STATIC_ROOT` trong `local_settings.py`.
 - Cấc trúc thư mục hiện tại của bản này tương ứng với file cấu hình:
 
 /projects  
 |\_\_\_\_\_foj  
 ............|\_\_\_\_\_site  
 ............|\_\_\_\_\_venv  
-............|\_\_\_\_\_static/funix/css  
-............|\_\_\_\_\_tmp  
+............|\_\_\_\_\_static
+............|\_\_\_\_\_tmp - chứa file logs, etc.
 ............|\_\_\_\_\_problems  
 ............|\_\_\_\_\_cache
 
