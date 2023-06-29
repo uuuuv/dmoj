@@ -21,6 +21,7 @@ SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY','*yi4(4v_e9-_j_4y189vgf9434ts-p1
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DJANGO_DEBUG', '') != 'False'  # Change to False once you are done with runserver testing.
 
+DEBUG = False
 # Common variables
 HOST = os.environ.get('DJANGO_HOST', '127.0.0.1')
 
@@ -42,11 +43,11 @@ if DEBUG == True:
         },
     }
 
-if DEBUG == False:
+if DEBUG == False: 
     CACHES = {
-        "default": {
-            "BACKEND": "django.core.cache.backends.redis.RedisCache",
-            "LOCATION": "redis://127.0.0.1:6379",
+        'default': {
+            'BACKEND': 'django.core.cache.backends.memcached.PyMemcacheCache',
+            'LOCATION': '127.0.0.1:11211',
         }
     }
 
@@ -308,8 +309,7 @@ LOGGING = {
         # Site 500 error mails.
         'django.request': {
             'handlers': ['mail_admins'],
-            'level': 'DEBUG',
-            # 'level': 'ERROR', uuuuvcomment
+            'level': 'ERROR',
             'propagate': False,
         },
         # Judging logs as received by bridged.
