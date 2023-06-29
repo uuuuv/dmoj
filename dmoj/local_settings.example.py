@@ -99,7 +99,8 @@ STATICFILES_FINDERS += ('compressor.finders.CompressorFinder',)
 # your email settings.
 
 # Use this if you are just testing.
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+if DEBUG == True:
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 # The following block is included for your convenience, if you want
 # to use Gmail.
@@ -288,7 +289,7 @@ LOGGING = {
         'bridge': {
             'level': 'INFO',
             'class': 'logging.handlers.RotatingFileHandler',
-            'filename':  os.path.join(PARENT_BASE_DIR, 'tmp', 'bridge.log'),
+            'filename': os.path.join(PARENT_BASE_DIR, 'tmp', 'bridge.log'),
             'maxBytes': 10 * 1024 * 1024,
             'backupCount': 10,
             'formatter': 'file',
