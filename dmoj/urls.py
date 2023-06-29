@@ -395,3 +395,10 @@ if 'impersonate' in settings.INSTALLED_APPS:
 urlpatterns += [
     path('beta', include('funix.urls'))
 ]
+
+from django.conf import settings
+DEBUG = settings.DEBUG
+if DEBUG == False: 
+    handler404 = 'funix.views.error.error404'
+    handler403 = 'funix.views.error.error403'
+    handler500 = 'funix.views.error.error500'
