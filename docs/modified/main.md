@@ -34,11 +34,11 @@ if DEBUG == False:
 
 
 ## user story
-- Danh sách problems > chọn problem > trang đề bài > click **Submit solution beta** > trang code, có path: /beta/problem/<problem code>
+- Danh sách problems > chọn problem > trang đề bài > click **Submit solution beta** > trang code, có path: /beta/problem/<-problem code->
 - Nếu chưa đăng nhập, chỉ hiển thị đề bài, vùng code editor sẽ hiển thị yêu cầu login.
 - Trang này sẽ hiển thị source code và kết quả submission lần cuối cùng, nếu chưa submit lần nào thì sẽ trống.
 - Viết code > click *submit* nếu chưa submit lần nào, *resubmit* nếu đã có submission trước đó.
-- User được chuyển tới path: /beta/problem/<problem code>/submission/<submission id> (giao diện y chang, cùng dùng 1 view), hiển thị loading và sau đó là kết quả submission.
+- User được chuyển tới path: /beta/problem/<-problem code->/submission/<-submission id-> (giao diện y chang, cùng dùng 1 view), hiển thị loading và sau đó là kết quả submission.
 
 ## Iframe của trang 'submit solution beta'
 - Để ẩn navigation bar (dùng cho iframe), thêm query vào url: ?iframe=1. Ví dụ: /beta/problem/problem1?iframe=1.
@@ -49,6 +49,6 @@ if DEBUG == False:
 ## Update test data beta
 - Một số problem không tạo bằng site interface được, ví dụ problem sử dụng customjudge, chỉ có input data, không có expected output data.
 - Những problem này do không tạo bằng site interface, nên không có model **ProblemTestCase** được tạo > không có model **ProblemTestCaseData** (đề cập ở trên), do đó không thể hiển thị được input data ở trang code.
-- Mình tạo chức năng **Update test data beta**, ở mỗi trang đề bài /problem/<problem code> sẽ có nút *Update test data beta*.
+- Mình tạo chức năng **Update test data beta**, ở mỗi trang đề bài /problem/<-problem code-> sẽ có nút *Update test data beta*.
 - Khi click nút trên > tìm folder trong problem data folder có tên = code của problem > đọc file init.yml > kiểm tra có input hay output file hay không > tạo ProblemTestCase và ProblemTestCaseData từ đó. Sau khi tạo thành công, data có thể được hiển thị.
 - Nếu các problem thông thường không tạo bằng site interface (copy từ nơi khác qua chẳng hạn), cũng có thể dùng chức năng này.
