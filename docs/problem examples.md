@@ -1,6 +1,6 @@
 # PROBLEM EXAMPLES
 
-1. Standard
+1. **Standard**
 ```yml
 archive: aplusb.zip
 test_cases:
@@ -9,7 +9,7 @@ test_cases:
 - {in: aplusb.3.in, out: aplusb.3.out, points: 75}
 ```
 
-2. Batched
+2. **Batched**
 3 batches, lần lượt là 5, 20, 25 điểm.
 ```yml
 archive: hungry.zip
@@ -33,7 +33,7 @@ test_cases:
   points: 25
 ```
 
-3. Generator
+3. **Generator**
 Ví dụ input là mảng có N * 1.000.000.000 phần tử.
 Lưu trong file thì lớn quá.
 Do đó có thể dùng generator: khi thí sinh submit thì mới tạo input output data từ N.
@@ -47,7 +47,7 @@ test_cases:
 - generator_args: [4]
 ```
 
-4. Custom grading
+4. **Custom grading**
 Đề bài: viết code tạo infinite loop với độ dài code ngắn nhất có thể.
 Điểm = 10/<độ dài code>.
 Không viết được infinite loop thì 0 điểm.
@@ -64,7 +64,7 @@ File này đánh giá bằng cách:
 - Tính độ dài code N
 - Cho điểm = 10/N nếu trả lời đúng, 0 nếu sai.
 
-5. Interactive
+5. **Interactive**
 Đề bài: cho số N. Viết vòng lặp đoán số N bằng cách in ra guess của bạn ở mỗi vòng lặp. Dựa vào guess cao hay thấp so với N, judge sẽ in ra 'cao' nếu guess > N, 'thấp' nếu guess < N, 'bằng' nếu guess = N. Bạn dựa vào đó để đoán tiếp sao cho số lần đoán < 31.
 
 ```yml

@@ -21,7 +21,6 @@ SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY','*yi4(4v_e9-_j_4y189vgf9434ts-p1
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DJANGO_DEBUG', '') != 'False'  # Change to False once you are done with runserver testing.
 
-DEBUG = False
 # Common variables
 HOST = os.environ.get('DJANGO_HOST', '127.0.0.1')
 
@@ -69,8 +68,7 @@ DATABASES = {
 
 # Sessions.
 # Documentation: <https://docs.djangoproject.com/en/3.2/topics/http/sessions/>
-if DEBUG == False:
-    SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
+# SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
 
 # Internationalization.
 # Documentation: <https://docs.djangoproject.com/en/3.2/topics/i18n/>
