@@ -181,9 +181,6 @@ class SubmissionTestCaseQueryBeta(SubmissionStatus):
         problem = submission.problem
         context['problem'] = problem
         context['testcases_map'] = map_test_cases(problem.cases.all())
-        raise HttpResponseBadRequest()
-        
-        
         return context
 
 @require_POST

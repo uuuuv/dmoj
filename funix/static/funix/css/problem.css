@@ -170,6 +170,10 @@
   background: var(--bg-main);
 }
 
+.problem-info-entry {
+  display: flex !important;
+}
+
 .problem_details {
   height: 100%;
   flex: 1;
@@ -543,10 +547,6 @@
 }
 
 @media screen and (max-width: 992px) {
-  :root {
-    --mainnav-height: 36px;
-  }
-
   .main {
     display: block;
     overflow: auto;
