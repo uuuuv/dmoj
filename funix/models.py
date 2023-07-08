@@ -1,6 +1,7 @@
 from django.db import models
 from judge.models.problem_data import ProblemTestCase
 from judge.models.problem import Problem
+from judge.models.submission import Submission
 from zipfile import ZipFile
 
 
@@ -30,3 +31,14 @@ def save(self, *args, **kwargs):
 ProblemTestCase.save = save
 del save
 
+
+class SuspiciousSubmissionBehavior(models.Model):
+    submission = models.ForeignKey(Submission, verbose_name="Suspicious Submission Behavior", related_name="suspicous_behaviors", on_delete=models.CASCADE)
+    time = models.DateTimeField(verbose_name="Suspicious Behavior Time")
+    
+    def __str__(self): 
+        return f"{self.submission.user.username} - {self.submission.problem.name} - {self.submission.id} - {self.time}"
+    
+
+    
+    

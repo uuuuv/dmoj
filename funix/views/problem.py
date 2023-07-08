@@ -11,8 +11,11 @@ from django.utils.functional import cached_property
 from django.utils.html import escape, format_html
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext as _, gettext_lazy
+import json
+from funix.models import SuspiciousSubmissionBehavior
+import datetime
 
-from judge.forms import ProblemSubmitForm
+from funix.forms import BetaProblemSubmitForm as ProblemSubmitForm
 from judge.models import ContestSubmission, Judge, Language, Problem,  RuntimeVersion, Submission, SubmissionSource
 from judge.utils.problems import contest_attempted_ids, contest_completed_ids,  user_attempted_ids, \
     user_completed_ids
@@ -287,6 +290,12 @@ class ProblemBeta(ProblemMixin, TitleMixin, SingleObjectFormView):
         # Save a query.
         self.new_submission.source = source
         self.new_submission.judge(force_judge=True, judge_id=form.cleaned_data['judge'])
+
+        # uuuuvcomment suspicious behaviors
+        suspicious_behaviors = json.loads(form.cleaned_data['suspicious_behaviors'])
+        if len(suspicious_behaviors) > 0:
+            for timestamp in suspicious_behaviors: 
+                SuspiciousSubmissionBehavior.objects.create(submission= self.new_submission, time=datetime.datetime.fromtimestamp(timestamp))
 
         return super().form_valid(form)
 
