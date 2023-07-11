@@ -1,5 +1,5 @@
 {% if problem.cases.count() == 0 %}
-<p>This problem has no test data to display.</p>
+    <p>This problem has no test data to display.</p>
 {% else %}
 <ul class="tabs">
     {% set case_count = counter() %}
@@ -70,7 +70,7 @@
                         <span>
                             {% if case_submission %} {# if is normal case and has submission #}
                                 {{ _('%(points)s/%(total)s points', points=case_submission.points|floatformat(0), total=case_submission.total|floatformat(0)) }}
-                            {% elif case_in_map.type == 'S'and  submission.test_cases.filter(batch=case_in_map.batch).count() > 1 %} {# if is batched start #}
+                            {% elif case_in_map.type == 'S'and submission and  submission.test_cases.filter(batch=case_in_map.batch).count() > 1 %} {# if is batched start #}
                                 {% set batched_submission = submission.test_cases.filter(batch=case_in_map.batch)[0] %}
                                 {{ _('%(points)s/%(total)s points', points=batched_submission.points|floatformat(0), total=batched_submission.total|floatformat(0)) }}
                             {% else %}

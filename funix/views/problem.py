@@ -20,6 +20,9 @@ from judge.models import ContestSubmission, Judge, Language, Problem,  RuntimeVe
 from judge.utils.problems import contest_attempted_ids, contest_completed_ids,  user_attempted_ids, \
     user_completed_ids
 from judge.utils.views import SingleObjectFormView, TitleMixin, generic_message
+from django.views.generic import View
+from judge.models.runtime import Language
+from funix.models import ProblemInitialSource
 
 def get_contest_problem(problem, profile):
     try:
@@ -467,3 +470,17 @@ class ProblemCommentsBeta(ProblemMixin, SolvedProblemMixin, CommentedDetailView)
             context['vote'] = None
         context['iframe'] = self.request.GET.get('iframe')
         return context
+
+
+class BetaLanguageTemplateAjax(View):
+    def get(self, request, *args, **kwargs):
+        initial_source = ProblemInitialSource.objects.filter(language=int(request.GET.get('id', 0)), problem=int(request.GET.get('problem_code', -1)))
+        if len(initial_source) > 0:
+            return HttpResponse(initial_source[0].source, content_type='text/plain')
+        else:
+            try:
+                language = get_object_or_404(Language, id=int(request.GET.get('id', 0)))
+            except ValueError:
+                raise Http404()
+            return HttpResponse(language.template, content_type='text/plain')
+

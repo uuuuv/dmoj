@@ -3,7 +3,7 @@ from judge.models.problem_data import ProblemTestCase
 from judge.models.problem import Problem
 from judge.models.submission import Submission
 from zipfile import ZipFile
-
+from judge.models.runtime import Language
 
 # Create your models here.
 class ProblemTestCaseData(models.Model):
@@ -41,4 +41,10 @@ class SuspiciousSubmissionBehavior(models.Model):
     
 
     
+class ProblemInitialSource(models.Model): 
+    problem = models.ForeignKey(Problem, on_delete=models.CASCADE, related_name="initial_codes")
+    source = models.TextField(verbose_name="Problem Initial Source", max_length=65536, default="", blank=True)
+    language = models.ForeignKey(Language, verbose_name="Initial Source Language", on_delete=models.CASCADE, related_name="initial_codes",  null=True)
     
+    class Meta:
+        unique_together = ('problem', 'language')

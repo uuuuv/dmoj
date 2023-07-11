@@ -8,31 +8,37 @@
       window.previous_template = '';
 
       function update_language_template() {
-          var source = $('textarea#id_source');
-          if (source.val() == window.previous_template.replace(/\r/g, '') || source.val() == '') {
-              var lang_id = $('#id_language').val();
-              var code = localStorage.getItem('submit:' + $('#id_language').val());
-
-              function update_submit_area(code) {
-                  window.previous_template = code;
-                  source.val(code);
-                  {% if submission %}
-                    window.ace_source.getSession().setValue(code);
-                  {% else %}
-                    window.ace_source.getSession().setValue('');
-                  {% endif %}
-              }
-
-              if (code != null) {
-                  update_submit_area(code);
-              } else {
-                  $.get('{{ url('language_template_ajax') }}', {
-                      id: lang_id
-                  }).done(function (template) {
-                      update_submit_area(template);
-                  });
-              }
+        function update_submit_area(code) {
+            window.previous_template = code;
+            source.val(code);
+            window.ace_source.getSession().setValue(code);
           }
+
+          var source = $('textarea#id_source');
+          var lang_id = $('#id_language').val();
+
+          // everytime when contestants change language
+          // if the language has submission > display submission source code
+          // else if has initial code (like somecode [...] somecode), display initial code
+          // else if has template code, display it
+          // else display ""
+          $.get('{{ url('beta_language_template_ajax') }}', {
+            id: lang_id,
+            problem_code: `{{problem.id}}`
+            }).done(function (template) {
+                {% if submission %}
+                    if (lang_id == `{{submission.language.id}}`) {
+                        update_submit_area(`{{submission.source.source}}`)
+                    } else {
+                        update_submit_area(template);
+                    }
+                {% else %}
+                    update_submit_area(template);
+                {% endif %}
+                
+                // save for reset button
+                window.initial_code = template;
+            });
       }
 
       function makeDisplayData(data) {
@@ -121,11 +127,55 @@
       });
 
       $('#problem_submit').submit(function (event) {
-          if ($('#id_source').val().length > 65536) {
-              alert("{{ _('Your source code must contain at most 65536 characters.') }}");
-              event.preventDefault();
-              $('#problem_submit').find(':submit').attr('disabled', false);
-          }
+        function preventSubmit() {
+            event.preventDefault();
+            $('#problem_submit').find(':submit').attr('disabled', false);
+        }        
+
+        var ellipsis = "[...]"
+
+        if ($('#id_source').val().length > 65536) {
+            alert("{{ _('Your source code must contain at most 65536 characters.') }}");
+            preventSubmit();
+        }
+
+        // initial_code can be template code (represents for each language)
+        // or initial_code like somecode [...] somecode
+        var initial_code = window.initial_code;
+
+        // if initial code contains [...] => need to check 
+        if (initial_code.includes(ellipsis)) {
+            initial_code = initial_code.replace(/[\t\n\r ]+/g, " ");
+            var contestant_code = $('#id_source').val().replace(/[\t\n\r ]+/g, " ");
+            
+            var lang_id = $("#id_language").val();
+
+            // validate
+            if (contestant_code.includes(ellipsis)) {
+                alert("Please fill out all the fields.");
+                preventSubmit();
+                return;
+            }
+
+            function transform(str) {
+                var specialCharacters = [".","*","+","?","|","[","]","(",")","{","}"]
+                var result = str.trim();
+                specialCharacters.forEach(char => {
+                    result = result.replace(new RegExp(`\\` + char, "g"), `\\` + `${char}`)
+                })
+                return result;
+            }
+
+            
+            var codePortions = initial_code.split(ellipsis).map(item => transform(item));
+            var regex = new RegExp(`^${codePortions.join(".+")}$`)
+            var i = 0;
+            if (!regex.test(contestant_code)) {
+                alert("Invalid code");
+                preventSubmit();
+            } 
+        } 
+
       });
   });
 </script>

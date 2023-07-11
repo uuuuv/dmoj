@@ -10,7 +10,7 @@
         <div id="language">
             {{ form.language.errors }}
             <div id="language-select">
-                <select id="id_language" name="language">
+                <select id="id_language" name="language" onchange="onChangeLanguage(event)">
                     {% for lang in form.fields.language.queryset %}
                         <option 
                             value="{{ lang.id }}" 
@@ -94,3 +94,9 @@
         {% endif %}
     </div>
 </form>
+
+<script type="text/javascript">
+    function onChangeLanguage(event) {
+        console.log(event.target.value)
+    }
+</script>

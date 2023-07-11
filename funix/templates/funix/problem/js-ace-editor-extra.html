@@ -37,7 +37,8 @@
   // clear code in the editor
   function clearEditor() {
     var source = $("textarea#id_source");
-    source.val("");
-    window.ace_source.getSession().setValue("");
+    
+    source.val(window.initial_code);
+    window.ace_source.getSession().setValue(window.initial_code);
   }
 </script>
