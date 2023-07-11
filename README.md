@@ -79,3 +79,23 @@ $ sudo mysql
 <MariaDB> > SET PASSWORD FOR 'root'@localhost = PASSWORD("<mật khẩu>");
 <MariaDB> > exit
 ```
+
+## Tính năng mới
+
+### Khi paste code vào editor quá 200 ký tự + submit sẽ được thông báo và lưu vào db (để  hạn chế gian lận)
+### Chức năng tạo code mẫu cho problem
+- Code mẫu có dạng
+```python
+def my_func():
+  [...]
+```
+- Thí sinh cần điền vào chỗ trống trên.
+- Nếu không điền hết sẽ thông báo và không cho submit.
+- Nếu thay đổi các phần khác sẽ thông báo và không cho submit.
+- Click nút reset sẽ reset code trong editor về  ban đầu.
+- Cách thêm initial code: khi tạo problem, kéo xuống dưới cùng click chọn Add problem initial source.
+- **Note**: giải thích về hiển thị code ở editor, độ ưu tiên từ trên xuống:
+  - Submission code (nếu có).
+  - Initial code (nếu có): có dạng somecode [...] somecode, code mẫu để thí sinh điền vào.
+  - Template code (nếu có): code đặc hiệu cho mỗi ngôn ngữ. 
+  - Trống.
